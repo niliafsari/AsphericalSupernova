@@ -69,7 +69,7 @@ luminosityBSG=load('/home/nilou/Data/processeddata/BSG/luminosity_smoothedk55_te
 %luminosityRSG1=load('/home/nilou/Data/processeddata/RSG/luminosity_smoothed45.mat','luminosity');
 luminosityRSG=load('/home/nilou/Data/processeddata/RSG/luminosity_smoothed55_temp.mat','luminosity');
 luminosityIc=load('/home/nilou/Data/processeddata/ic/luminosity_smoothed.mat','luminosity');
-time=load('/home/nilou/Data/timesteps.mat');
+time=load('/home/nilou/Data/processeddata/timesteps.mat');
 
 time_rsg=(time.time1*tconv_rsg);
 time_bsg=(time.time1*tconv_bsg);

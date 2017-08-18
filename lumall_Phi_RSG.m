@@ -50,7 +50,7 @@ load('/home/nilou/Data/processeddata/RSG/luminosity_0.mat','luminosity')
 load('/home/nilou/Data/processeddata/RSG/luminosity_90.mat','luminosity90')
 load('/home/nilou/Data/processeddata/RSG/luminosity_tot.mat','luminosity_tot')
 
-time=load('/home/nilou/Data/timesteps.mat');
+time=load('/home/nilou/Data/processeddata/timesteps.mat');
 
 %    const=linspace(0.8,0.6,16);
 %    luminosityRSG.luminosity(40:50)=luminosityRSG.luminosity(40:50).*const(1:11);
@@ -63,7 +63,7 @@ time=load('/home/nilou/Data/timesteps.mat');
 
 tt=1:50;
 time_rsg=(time.time1*tconv_rsg);
-time_bsg=(time.time1*tconv_bsg);
+%time_bsg=(time.time1*tconv_bsg);
 time_ic=(time.time1*tconv_ic);
 
 m=14*msun;

@@ -71,7 +71,7 @@ sphic=load('/home/nilou/Data/processeddata/BSG/lumsphericalic.mat','L_s');
 sphRSG=load('/home/nilou/Data/processeddata/RSG/lumspherical.mat','L_s');
 
 
-time=load('/home/nilou/Data/timesteps.mat');
+time=load('/home/nilou/Data/processeddata/timesteps.mat');
 
 %    const=linspace(0.8,0.6,16);
 %    luminosityRSG.luminosity(40:50)=luminosityRSG.luminosity(40:50).*const(1:11);

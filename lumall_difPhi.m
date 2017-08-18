@@ -43,7 +43,7 @@ tconv_bsg=rconv/vconv;
  load('/home/nilou/Data/processeddata/BSG/luminosityV1_0.mat','luminosity')
  load('/home/nilou/Data/processeddata/BSG/luminosityV1_90.mat','luminosity90')
  load('/home/nilou/Data/processeddata/BSG/luminosityV1_tot.mat','luminosity_tot')
-time=load('/home/nilou/Data/timesteps.mat');
+time=load('/home/nilou/Data/processeddata/timesteps.mat');
 
 %  const=linspace(0.9,0.5,16);
 %  luminosityRSG.luminosity(35:50)=luminosityRSG.luminosity(35:50).*const(1:16);
