@@ -22,7 +22,7 @@ for i=1:256
 end
 
 for t=23:23
-    name=['/home/nilou/Data/pres256_' int2str(t) '.csv'] ;
+    name=['/home/nilou/Data/processeddata/dens256_' int2str(t) '.csv'] ;
     density= csvread(name)/rhotot;
     close all
     a=get(gcf,'Position');
@@ -51,7 +51,7 @@ for t=23:23
     set(gcf, 'PaperPosition', [0 0 5 4.5]); %Position plot at left hand corner with width 5 and height 5.
     set(gcf, 'PaperSize', [5 4.5]); %Set the paper to have width 5 and height 5.
     %print(gcf, '-dpng',name)
-    print('-dpng',name) 
-    export_fig(name, '-png')
+    %print(gcf, '-dpdf','-r10',name) 
+    %export_fig(name, '-pdf','-r5')
 end
 
