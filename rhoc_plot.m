@@ -45,33 +45,7 @@ cone=[0 0 0 0 0 0 0.02 0.02 0.1 0.1 0.1 0.15 0.17 0.17 0.2 0.2 0.22 0.23 0.23 0.
 %     j=j+1;
 % end
 % 
-% close all
-% a=get(gcf,'Position');
-% x0=15;
-% y0=15;
-% width=350;
-% height=300;
-% myFigure = figure('PaperPositionMode','auto','Color','w');
-% set(myFigure,'units','points','position',[x0,y0,width,height])
-% 
-% set(0,'DefaultAxesLineStyleOrder','-|--|:|-.')
-% 
-% 
-% plot(asin(1./xx(513:2048,2048))*180/pi,log10(p_c(:,2)),'-k','LineWidth',2), hold on
-% plot(asin(1./xx(513:2048,2048))*180/pi,log10(p_c(:,3)),'--k','LineWidth',2), hold on
-% plot(asin(1./xx(513:2048,2048))*180/pi,log10(p_c(:,4)),':k','LineWidth',2), hold on
-% plot(asin(1./xx(513:2048,2048))*180/pi,log10(p_c(:,5)),'-.k','LineWidth',2)
-% 
-% legend(['t/t_*=' num2str(time(40),3)],['t/t_*=' num2str(time(50),3)],['t/t_*=' num2str(time(60),3)],...
-%     ['t/t_*=' num2str(time(70),3)])
-% ylabel('Log (p_c/p_*)'); 
-% xlabel('\theta_c [deg]');
-% set(gca,'LineWidth',1.5,'FontSize',11);
-% name=['/home/nilou/Data/plot/p_c.pdf'];    
-% print('-dpdf',name) 
-% export_fig(name, '-pdf')
-
-% close all
+close all
 a=get(gcf,'Position');
 x0=15;
 y0=15;
@@ -82,16 +56,70 @@ set(myFigure,'units','points','position',[x0,y0,width,height])
 
 set(0,'DefaultAxesLineStyleOrder','-|--|:|-.')
 
-plot(asin(1./xx(513:2048,2048))*180/pi,log10(dens_c(:,2)),'-k','LineWidth',2), hold on
-plot(asin(1./xx(513:2048,2048))*180/pi,log10(dens_c(:,3)),'--k','LineWidth',2), hold on
-plot(asin(1./xx(513:2048,2048))*180/pi,log10(dens_c(:,4)),':k','LineWidth',2), hold on
-plot(asin(1./xx(513:2048,2048))*180/pi,log10(dens_c(:,5)),'-.k','LineWidth',2)
 
-legend(['t/t_*=' num2str(time(40),3)],['t/t_*=' num2str(time(50),3)],['t/t_*=' num2str(time(60),3)],...
-    ['t/t_*=' num2str(time(70),3)])
-ylabel('Log (\rho_c/\rho_*)'); 
-xlabel('\theta_c [deg]'); 
+plot(asin(1./xx(513:2048,2048))*180/pi,log10(p_c(:,2)),'-k','LineWidth',2), hold on
+plot(asin(1./xx(513:2048,2048))*180/pi,log10(p_c(:,3)),'--k','LineWidth',2), hold on
+plot(asin(1./xx(513:2048,2048))*180/pi,log10(p_c(:,4)),':k','LineWidth',2), hold on
+plot(asin(1./xx(513:2048,2048))*180/pi,log10(p_c(:,5)),'-.k','LineWidth',2)
+
+leg=legend(['t/t_*=' num2str(time(40),3)],['t/t_*=' num2str(time(50),3)],['t/t_*=' num2str(time(60),3)],...
+    ['t/t_*=' num2str(time(70),3)],'Location','best')
+ylabel('Log (p_c/p_*)'); 
+xlabel('\theta_c [deg]');
 set(gca,'LineWidth',1.5,'FontSize',11);
-name=['/home/nilou/Data/plot/rho_c.pdf'];    
+
+ax1 = gca; % current axes
+ax1_pos = ax1.Position; % position of first axes
+ax2 = axes('Position',ax1_pos,...
+    'XAxisLocation','top',...
+    'YAxisLocation','right',...
+    'Color','none');
+ax2.YTick=[]
+ax1.XTick=0:15:90
+ax2.XTick=ax1.XTick/100
+r=1./sin(ax1.XTick*pi/180)
+ax2.XTickLabel=num2cell(round(r,2))
+ax2.XLabel.String='x/R_*'
+
+name=['/home/nilou/Data/plot/p_c.pdf'];    
 print('-dpdf',name) 
 export_fig(name, '-pdf')
+
+%  close all
+% a=get(gcf,'Position');
+% x0=15;
+% y0=15;
+% width=350;
+% height=300;
+% myFigure = figure('PaperPositionMode','auto','Color','w');
+% set(myFigure,'units','points','position',[x0,y0,width,height])
+% 
+% set(0,'DefaultAxesLineStyleOrder','-|--|:|-.')
+% 
+% plot(asin(1./xx(513:2048,2048))*180/pi,log10(dens_c(:,2)),'-k','LineWidth',2), hold on
+% plot(asin(1./xx(513:2048,2048))*180/pi,log10(dens_c(:,3)),'--k','LineWidth',2), hold on
+% plot(asin(1./xx(513:2048,2048))*180/pi,log10(dens_c(:,4)),':k','LineWidth',2), hold on
+% plot(asin(1./xx(513:2048,2048))*180/pi,log10(dens_c(:,5)),'-.k','LineWidth',2)
+% 
+% 
+% 
+% leg=legend(['t/t_*=' num2str(time(40),3)],['t/t_*=' num2str(time(50),3)],['t/t_*=' num2str(time(60),3)], ['t/t_*=' num2str(time(70),3)],'Location','best')
+% ylabel('Log (\rho_c/\rho_*)'); 
+% xlabel('\theta_c [deg]'); 
+% set(gca,'LineWidth',1.5,'FontSize',11);
+% 
+% ax1 = gca; % current axes
+% ax1_pos = ax1.Position; % position of first axes
+% ax2 = axes('Position',ax1_pos,...
+%     'XAxisLocation','top',...
+%     'YAxisLocation','right',...
+%     'Color','none');
+% ax2.YTick=[]
+% ax1.XTick=0:15:90
+% ax2.XTick=ax1.XTick/100
+% r=1./sin(ax1.XTick*pi/180)
+% ax2.XTickLabel=num2cell(round(r,2))
+% ax2.XLabel.String='x/R_*'
+% name=['/home/nilou/Data/plot/rho_c.pdf'];    
+% print('-dpdf',name) 
+% export_fig(name, '-pdf')

@@ -5,7 +5,7 @@ gfun_data=zeros(cell,cell);
 pres_data=zeros(cell,cell);
 velx_data=zeros(cell,cell);
 vely_data=zeros(cell,cell);
-for i=0:151
+for i=175:175
     i
     if i<10
         name='sedov_sphhdf5_chk_000';
@@ -41,9 +41,9 @@ for i=0:151
             vely_data((k-1)*64+1:k*64,(j-1)*64+1:j*64)=vely(1:64,1:64,same(k));
         end
     end
-    xlswrite(['/home/nilou/Data/rawdata/density/dens' int2str(cell) '_' int2str(i) '.xlsx'],dens_data);
-    xlswrite(['/home/nilou/Data/rawdata/pressure/pres' int2str(cell) '_' int2str(i) '.xlsx'],pres_data);
-    xlswrite(['/home/nilou/Data/rawdata/velocity/velr' int2str(cell) '_' int2str(i) '.xlsx'],velx_data);
-    xlswrite(['/home/nilou/Data/rawdata/gfunction/gfun' int2str(cell) '_' int2str(i) '.xlsx'],vely_data);
-    xlswrite(['/home/nilou/Data/rawdata/velocity/velth' int2str(cell) '_' int2str(i) '.xlsx'],vely_data);
+    save(['/home/nilou/Data/rawdata/density/dens' int2str(cell) '_' int2str(i) '.mat'],'dens_data');
+    save(['/home/nilou/Data/rawdata/pressure/pres' int2str(cell) '_' int2str(i) '.mat'],'pres_data');
+    save(['/home/nilou/Data/rawdata/velocity/velr' int2str(cell) '_' int2str(i) '.mat'],'velx_data');
+    save(['/home/nilou/Data/rawdata/gfunction/gfun' int2str(cell) '_' int2str(i) '.mat'],'gfun_data');
+    save(['/home/nilou/Data/rawdata/velocity/velth' int2str(cell) '_' int2str(i) '.mat'],'vely_data');
 end 
