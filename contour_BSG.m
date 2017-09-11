@@ -42,25 +42,25 @@ luminosity=zeros(1,501-201);
 %load('luminosity.mat', 'luminosity');
 time=load([path '/processeddata/timesteps_1024.mat']);
 clear diff_bsg
-for t=161:191
+for t=161:174
     t
     name=[ path '/rawdata/dcodeunit/dcodeunit1024_' int2str(t-1) '.mat'];
     load(name,'d');
     diff_frontBSG= d*(kappa/c)*rhoconv*vconv*rconv;
-
-    if (t<191)
-        ke=1;
-    elseif (t<230 & t>190)
-        ke=10;
-    elseif (t>230 & t<280)
-        ke=10;
-    elseif (t>270 & t<310)
+    
+    if (t<174)
+        ke=5;
+    elseif (t==175 || t==174)
+        ke=5;
+    elseif (t<175 & t>170)
+        ke=15;
+    elseif (t<180 & t>174)
+        ke=25;
+    elseif (t<190 & t>179)
+        ke=30;
+    elseif (t>189 & t<331)
         ke=55;
-    elseif (t>300 & t<330)
-        ke=55;
-    elseif (t>320 & t<400)
-        ke=55;
-    elseif (t>390 & t<510)
+    else
         ke=55;
     end
     temp=zeros(2048+2*ke,2048+ke);
@@ -70,7 +70,7 @@ for t=161:191
     dsmooth= temp1(1:2048,1:2048);
 
    close all
- 
+%  
 %     h=surf(xx,yy,log10(real(diff_frontBSG)));hold on
 %     grid off
 %     set(h,'LineStyle','none');
@@ -81,8 +81,9 @@ for t=161:191
 %     ylabel('y/R_*');
 %     title(['t=' num2str(time.time1(t)*tconv,3) ' (sec)']); 
 %     axis equal       
-    
+%     
     [diff_bsg,~]=contour3(xx,yy,dsmooth,[0 0],'LineColor','r','Linewidth',1);
+    cont=diff_bsg;
 %     set(gca,'LineWidth',2,'FontSize',12);
 %     caxis([-2 7]) 
 %     ylabel(cl,'$ Log \frac{t_{diff}}{t_{dyn}} $','interpreter','latex','FontSize',24);    

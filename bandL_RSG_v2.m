@@ -10,15 +10,16 @@ c=3e10;
 h=6.62e-27;
 k_B=1.38e-16;
 sigma=5.6e-5;
+Z=0.005;
+a=7.566e-15;
+X=0.7;
 
 rconv=r/rtot;
 econv=e/etot;
 mconv=m/mtot;
 v=sqrt(e/m);
 rho=m/(r^3);
-Z=0.005;
-a=7.566e-15;
-X=0.7;
+
 kappa_T=0.2*(1+X);
 
 pconv=econv/rconv^3;

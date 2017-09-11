@@ -42,18 +42,24 @@ luminosity=zeros(1,501-201);
 %load('luminosity.mat', 'luminosity');
 time=load([path '/processeddata/timesteps_1024.mat']);
 clear diff_bsg
-for t=161:501
+for t=161:230
     t
     name=[ path '/rawdata/dcodeunit/dcodeunit1024_' int2str(t-1) '.mat'];
     load(name,'d');
     diff_frontBSG= d*(kappa/c)*rhoconv*vconv*rconv;
 
-    if (t<191)
+    if (t<174)
         ke=1;
-    elseif (t<281 & t>190)
+    elseif (t==175 || t==174)
+        ke=1;
+    elseif (t<175 & t>170)
+        ke=2;
+    elseif (t<180 & t>174)
         ke=10;
-    elseif (t>280 & t<331)
-        ke=55;
+    elseif (t<190 & t>179)
+        ke=25;
+    elseif (t>189 & t<331)
+        ke=25;
     else
         ke=55;
     end
@@ -63,8 +69,8 @@ for t=161:501
     temp1 = imfilter(log10(real(temp)),kernel,'same');
     dsmooth= temp1(1:2048,1:2048);
 
-   close all
- 
+%    close all
+%  
 %     h=surf(xx,yy,log10(real(diff_frontBSG)));hold on
 %     grid off
 %     set(h,'LineStyle','none');
@@ -81,8 +87,8 @@ for t=161:501
 %     caxis([-2 7]) 
 %     ylabel(cl,'$ Log \frac{t_{diff}}{t_{dyn}} $','interpreter','latex','FontSize',24);    
 %     view(2); 
-%     name=['/home/nilou/Data/plot/icdiff/DiffFrontic_1024_' num2str(t-1) '.png'];
+%     name=[path '/plot/icdiff/DiffFrontic_1024_' num2str(t-1) '.png'];
 %     print(gcf, '-dpng', '-r100', name)
 %     export_fig(name, '-dpng', '-r100')
-    save([path '/processeddata/ic/diff_ic_1024_' num2str(t-1) '.mat'], 'diff_bsg') 
+     save([path '/processeddata/ic/diff_ic_1024_' num2str(t-1) '.mat'], 'diff_bsg') 
 end

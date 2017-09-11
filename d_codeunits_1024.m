@@ -25,31 +25,32 @@ else
     path='/home/nilou/Data';
 end
 
-for t=161:170
+for t=161:501
     t
     d=zeros(2048,2048);
+    gradp2=zeros(2048,2048);
     if (t<=200 && t~=176)
         name=[path '/rawdata/pressure/pres1024_' int2str(t-1) '.csv'] ;
         pres= csvread(name).*pconv;
-        name=[path '/rawdata/density/dens1024_' int2str(t-1) '.csv'] ;
-        dens= csvread(name).*rhoconv;
-        name=[path '/rawdata/velocity/velr1024_' int2str(t-1) '.csv'] ;
-        velr= csvread(name).*vconv;
-        name=[path '/rawdata/velocity/velth1024_' int2str(t-1) '.csv'] ;
-        velt= csvread(name).*vconv;        
+%         name=[path '/rawdata/density/dens1024_' int2str(t-1) '.csv'] ;
+%         dens= csvread(name).*rhoconv;
+%         name=[path '/rawdata/velocity/velr1024_' int2str(t-1) '.csv'] ;
+%         velr= csvread(name).*vconv;
+%         name=[path '/rawdata/velocity/velth1024_' int2str(t-1) '.csv'] ;
+%         velt= csvread(name).*vconv;        
     else
         name=[path '/rawdata/pressure/pres1024_' int2str(t-1) '.mat'] ;
         load(name,'pres_data');
         pres=pres_data*pconv;
-        name=[path '/rawdata/density/dens1024_' int2str(t-1) '.mat'] ;
-        load(name,'dens_data');
-        dens=dens_data*rhoconv;
-        name=[path '/rawdata/velocity/velr1024_' int2str(t-1) '.mat'] ;
-        load(name,'velx_data');
-        velr=velx_data*vconv;
-        name=[path '/rawdata/velocity/velth1024_' int2str(t-1) '.mat'] ;
-        load(name,'vely_data');
-        velt=vely_data*vconv;  
+%         name=[path '/rawdata/density/dens1024_' int2str(t-1) '.mat'] ;
+%         load(name,'dens_data');
+%         dens=dens_data*rhoconv;
+%         name=[path '/rawdata/velocity/velr1024_' int2str(t-1) '.mat'] ;
+%         load(name,'velx_data');
+%         velr=velx_data*vconv;
+%         name=[path '/rawdata/velocity/velth1024_' int2str(t-1) '.mat'] ;
+%         load(name,'vely_data');
+%         velt=vely_data*vconv;  
     end
     for i=1:2048
         for j=1:2048
@@ -85,13 +86,13 @@ for t=161:170
             cr=pr+ dr/2;
             dt=nt-pt;
             ct=pt+ dt/2;
-            delvel= ((nr^2 * velr(nindex_r,j) - pr^2 * velr(pindex_r,j))/ (cr^2 * dr) )+ (( sin(nt)*velt(i,nindex_t) - sin(pt) * velt(i,pindex_t))/(cr * sin(ct)* dt));
-            gradp2=((pres(nindex_r,j)-pres(pindex_r,j))/dr)^2+ ((pres(i,nindex_t)-pres(i,pindex_t))/(cr*dt))^2;
-            d(i,j)=(3*kappa*dens(i,j)*abs(delvel)*(pres(i,j)^2))/(c*gradp2);
+            %delvel= ((nr^2 * velr(nindex_r,j) - pr^2 * velr(pindex_r,j))/ (cr^2 * dr) )+ (( sin(nt)*velt(i,nindex_t) - sin(pt) * velt(i,pindex_t))/(cr * sin(ct)* dt));
+            gradp2(i,j)=((pres(nindex_r,j)-pres(pindex_r,j))/dr)^2+ ((pres(i,nindex_t)-pres(i,pindex_t))/(cr*dt))^2;
+            %d(i,j)=(3*kappa*dens(i,j)*abs(delvel)*(pres(i,j)^2))/(c*gradp2(i,j));
         end
     end
-    name=[ path '/rawdata/dcodeunit/dcodeunit1024_' int2str(t-1) '.mat'];
-    save(name,'d');
+%     name=[ path '/rawdata/dcodeunit/dcodeunit1024_' int2str(t-1) '.mat'];
+%     save(name,'d');
     name=[ path '/rawdata/gradp2/gradp21024_' int2str(t-1) '.mat'];
     save(name,'gradp2');    
 end

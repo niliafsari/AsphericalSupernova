@@ -30,8 +30,9 @@ tconv_ic=rconv/vconv;
 load('/home/nilou/Data/processeddata/BSG/luminosity_0.mat','luminosity')
 load('/home/nilou/Data/processeddata/BSG/luminosity_90.mat','luminosity90')
 load('/home/nilou/Data/processeddata/BSG/luminosity_tot.mat','luminosity_tot')
+load('/home/nilou/Data/processeddata/ic/spherical_ic.mat','log_l','time_axis_log','spherical_LC_NS');
 
-time=load('/home/nilou/Data/timesteps.mat');
+time=load('/home/nilou/Data/processeddata/timesteps.mat');
 
 luminosity(23)=4.2e42;
 luminosity90(23)=2.1e42;
@@ -75,6 +76,7 @@ set(myFigure,'units','points','position',[x0,y0,width,height])
 
 f= fit(log10(time_ic(23:40)),log10(luminosity(23:40)/9.7)','rat44');
 luminosity_fit=f(log10(time_ic(23:32)'));
+luminosity_fit(1)=41.8;
 plot(log10(time_ic(23:32)),luminosity_fit,'-r','LineWidth',1.5),hold on,
 
 f= fit(log10(time_ic(23:40)),log10(2*luminosity90(23:40)/9.7)','rat44');
@@ -86,7 +88,7 @@ luminosity_tot_fit=f(log10(time_ic(23:32)'));
 plot(log10(time_ic(23:32)),luminosity_tot_fit,'-.b','LineWidth',1.5),hold on,
 
  
-plot(log10(time_ic(23:32)),log10(L_s)',':m','LineWidth',1.5),hold on,
+plot(time_axis_log+0.01,log_l,':m','LineWidth',1.5),hold on,
 
 
 xlabel('Log (t [sec])'); 

@@ -149,7 +149,7 @@ for t=22:22
         end
     end
     luminosity(t)=dot(flux1,factor);
-    close all
+%    close all
     a=get(gcf,'Position');
     x0=15;
     y0=15;

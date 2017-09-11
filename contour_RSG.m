@@ -1,12 +1,12 @@
-mtot=4.82611e-3*2;
-etot=1.3402e-2*2;
+mtot=4.82611e-3;
+etot=1.3402e-2;
 rtot=0.5;
 msun=1.989e33;
 rsun=6.955e10;
 
 m=14*msun;
 e=1e51;
-r=500*rsun;
+r=400*rsun;
 
 kappa=0.34;
 c=3e10;
@@ -29,7 +29,7 @@ for i=1:2048
     end
 end
 
-cita=1;
+cita=0;
 
 if cita==1
     path='/mnt/scratch-lustre/nafsari/Data2048';
@@ -42,24 +42,21 @@ luminosity=zeros(1,501-201);
 %load('luminosity.mat', 'luminosity');
 time=load([path '/processeddata/timesteps_1024.mat']);
 clear diff_bsg
-for t=161:200
+for t=173:173
     t
     name=[ path '/rawdata/dcodeunit/dcodeunit1024_' int2str(t-1) '.mat'];
     load(name,'d');
     diff_frontBSG= d*(kappa/c)*rhoconv*vconv*rconv;
-    if (t<191)
-        ke=1;
-    elseif (t<230 & t>190)
-        ke=10;
-    elseif (t>230 & t<280)
-        ke=10;
-    elseif (t>270 & t<310)
+
+    if (t<175)
+        ke=5;
+    elseif (t<180 & t>174)
+        ke=25;
+    elseif (t<190 & t>179)
+        ke=30;
+    elseif (t>189 & t<331)
         ke=55;
-    elseif (t>300 & t<330)
-        ke=55;
-    elseif (t>320 & t<400)
-        ke=55;
-    elseif (t>390 & t<510)
+    else
         ke=55;
     end
     temp=zeros(2048+2*ke,2048+ke);
@@ -82,12 +79,12 @@ for t=161:200
 %     axis equal       
     
     [diff_bsg,~]=contour3(xx,yy,dsmooth,[0 0],'LineColor','r','Linewidth',1);
-%     set(gca,'LineWidth',2,'FontSize',12);
-%     caxis([-2 7]) 
-%     ylabel(cl,'$ Log \frac{t_{diff}}{t_{dyn}} $','interpreter','latex','FontSize',24);    
-%     view(2); 
-%     name=['/home/nilou/Data/plot/RSGdiff/DiffFrontRSG_1024_' num2str(t-1) '.png'];
-%     print(gcf, '-dpng', '-r100', name)
-%     export_fig(name, '-dpng', '-r100')
+    set(gca,'LineWidth',2,'FontSize',12);
+    caxis([-2 7]) 
+    ylabel(cl,'$ Log \frac{t_{diff}}{t_{dyn}} $','interpreter','latex','FontSize',24);    
+    view(2); 
+    name=['/home/nilou/Data/plot/RSGdiff/DiffFrontRSG_1024_' num2str(t-1) '.png'];
+    print(gcf, '-dpng', '-r100', name)
+    export_fig(name, '-dpng', '-r100')
     save([path '/processeddata/RSG/diff_rsg_1024_' num2str(t-1) '.mat'], 'diff_bsg') 
 end

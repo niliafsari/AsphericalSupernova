@@ -1,11 +1,13 @@
-mtot=0.0048187313;
-etot=0.0130949665;
+mtot=4.82611e-3*2;
+etot=1.3402e-2*2;
 rtot=0.5;
 msun=1.989e33;
 rsun=6.955e10;
+
 m=15*msun;
 e=1e51;
 r=49*rsun;
+
 Z=0.005;
 a=7.566e-15;
 X=0.7;
@@ -35,27 +37,48 @@ for i=1:2048
        yy(i,j)=radius(i)*cos(theta(j)); 
     end
 end
-time=load('/home/nilou/Data/timesteps.mat');
+time=load('/home/nilou/Data/timesteps_1024.mat');
 %load('/home/nilou/Data/processeddata/BSG/eta_com_bsg.mat','eta_com');
 time_bsg=(time.time1*tconv);
-for t=27:27
+
+cita=0;
+
+if cita==1
+    path='/mnt/scratch-lustre/nafsari/Data2048';
+else
+    path='/home/nilou/Data';
+end
+
+C=3.4e36;
+prefac=C*2.7*k_B*rhoconv^2/(3^(7/8)*a^(1/8)*pconv^(7/8));
+for t=230:230
     a=7.566e-15;
     t
     radius=zeros(1,2048);
-    name=['/home/nilou/Data/processeddata/BSG/tauBSGradial_' int2str(t-1) '.csv'] ;
-    tau= csvread(name);
-    nameff=['/home/nilou/Data/processeddata/BSG/tauBSGradialFF_' int2str(t-1) '.csv'] ;
-    tauff= csvread(nameff);
-    name=['/home/nilou/Data/rawdata/density/dens2048_' int2str(t-1) '.csv'] ;
-    density= csvread(name)*rhoconv;
-    name=['/home/nilou/Data/rawdata/pressure/pres2048_' int2str(t-1) '.csv'] ;
-    pres= csvread(name)*pconv;
-    name=['/home/nilou/Data/processeddata/BSG/dparamBSG_v2_' int2str(t-1) '.csv'] ;
-    d= csvread(name);
-    name=[ '/home/nilou/Data/processeddata/BSG/gradp_' int2str(t-2) '.csv'];
-    gradp=csvread(name);
-    diff_bsg1=load(['/home/nilou/Data/processeddata/BSG/diff_bsg_smoothed_k55_temp' num2str(t) '.mat']);
-     
+
+    load([path '/processeddata/BSG/diff_bsg_1024_' num2str(t-1) '.mat'], 'diff_bsg'); 
+    name=[ path '/rawdata/gradp2/gradp21024_' int2str(t-1) '.mat'];
+    load(name,'gradp2'); 
+    gradp=sqrt(gradp2*pconv^2/rconv^2);
+    
+    name=[path '/rawdata/gfunction/gfun1024_' int2str(t-1) '.mat'] ;
+    load(name,'gfun_data');
+    gfun=gfun_data*prefac;
+    
+        if (t<=200 && t~=176)
+        name=[path '/rawdata/pressure/pres1024_' int2str(t-1) '.csv'] ;
+        pres= csvread(name).*pconv;
+        name=[path '/rawdata/density/dens1024_' int2str(t-1) '.csv'] ;
+        density= csvread(name).*rhoconv;       
+    else
+        name=[path '/rawdata/pressure/pres1024_' int2str(t-1) '.mat'] ;
+        load(name,'pres_data');
+        pres=pres_data*pconv;
+        name=[path '/rawdata/density/dens1024_' int2str(t-1) '.mat'] ;
+        load(name,'dens_data');
+        density=dens_data*rhoconv;
+    end
+    
     t_loc_all=(3*pres/a).^0.25;
     tdiff_all=(3*kappa*density).*(pres.^2)./(c*gradp.^2);
     etha_all=(7e5./min(time_ic(t),tdiff_all)).*((density/1e-10).^-2).*(t_loc_all/(100*11604.52)).^3.5;
