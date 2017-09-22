@@ -65,11 +65,11 @@ f= fit(log10(time_bsg(173:2:352)),log10(luminosity(1,173:2:352))','rat44');
 luminosity_fit=10.^f(log10(time_bsg(173:2:352-14)'));
 %plot(log10(time_bsg(173:2:352)),luminosity_fit,'-r','LineWidth',1.5),hold on,
 
-f= fit(log10(time_bsg(173:2:352)),log10(2*luminosity90(1,173:2:352))','rat44');
-luminosity90_fit=10.^f(log10(time_bsg(173:2:352-14)'));
+fff= fit(log10(time_bsg(173:2:352)),log10(2*luminosity90(1,173:2:352))','rat44');
+luminosity90_fit=10.^fff(log10(time_bsg(173:2:352-14)'));
 %plot(log10(time_bsg(173:2:352)),luminosity90_fit,'--k','LineWidth',1.5),hold on,
 
-ff= fit(time_axis_log(1:80),log_l(1:80),'poly5');
+ff= fit(time_axis_log(1:80),log_l(1:80),'poly4');
 L_s=10.^ff(log10(time_bsg(173:2:352-14)'));
 %plot(log10(time_bsg(173:2:352)),luminosity_tot_fit,'-.b','LineWidth',1.5),hold on,
 
@@ -81,20 +81,33 @@ t_color_bsg=t_color_bsg(23:40);
 
 
 
-load('/home/nilou/Data/processeddata/BSG/colortemp_BSG_spherical.mat','t_loc_all','time_rsg','etha_all');
-
+% load('/home/nilou/Data/processeddata/BSG/colortemp_BSG_spherical.mat','t_loc_all','time_rsg','etha_all');
+% 
 load([path '/processeddata/BSG/colortem_1024_tot.mat'],'t_tot')
-
+% 
 ind=[173 194   201   202   203   204   205   206   208   209 210   213   214   215]
 time_bsg(ind)=[];
 t_tot(ind)=[];
 
-f= fit(log10(time_bsg(173:2:352-14)),log10(t_tot(173:2:352-14)/11604.52)','poly5');
-t_color_bsg=(10.^f(log10(time_bsg(173:2:352-14)')))*11604.52;
+t_sph=time_bsg(173:2:352-14)-time_bsg(173)+113.59;
+T_c=zeros(83,1);
+t_s=0.5*3600* (m/(15*msun))^0.41*(r/(50*rsun))^1.33*(e/1e51)^-0.58;
+% t1=13*60*(m/(10*msun))^-0.24*(r/(20*rsun))^0.94*(e/1e51)^0.29;
+% t2=20*60*(m/(10*msun))^-0.77*(r/(20*rsun))^0.62*(e/1e51)^0.99;
+
+T_c(t_sph<t_s)=50*(m/(25*msun))^-0.19*(r/(70*rsun))^0.06 *(e/1e51)^0.22* (t_sph(t_sph<t_s)/60).^-(16/45);
+T_c(t_sph>t_s )=10*(m/(25*msun))^-0.11*(r/(70*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t_s)/3600).^-0.61;
+% T_c(t_sph>t1 & t_sph<t2)=15*(m/(10*msun))^0.05*(r/(20*rsun))^0.25 *(e/1e51)^-0.1* (t_sph(t_sph>t1 & t_sph<t2)/(15*60)).^-0.4;
+% T_c(t_sph>t2)=7*(m/(10*msun))^-0.11*(r/(20*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t2)/3600).^-0.61;
+
+t_c=T_c*11604.52;
+f= fit(log10(time_bsg(173:2:352-14)),log10(t_c'/11604.52)','poly5');
+T_c=(10.^f(log10(time_bsg(173:2:352-14)')))*11604.52;
+
+fx= fit(log10(time_bsg(173:2:352-14)),log10(t_tot(173:2:352-14)/11604.52)','poly5');
+t_color_bsg=(10.^fx(log10(time_bsg(173:2:352-14)')))*11604.52;
 %plot(log10(time_bsg(172:352-14)),t_t,'-k','LineWidth',1.5); hold on 
 
-f= fit(log10(time_rsg(114:180)-time_rsg(114)+time_rsg(67)),log10(t_loc_all(114:180)/11604.52),'poly6');
-T_c=(10.^f(log10(time_bsg(173:2:352-14)')))*11604.52;
 %plot(log10(time_rsg(114:180)-time_rsg(114)+time_rsg(67)),t_t,'--k','LineWidth',1.5),hold on,
 
 
@@ -139,7 +152,7 @@ for i=1:length(bands)
         bandL(i,:,1)=((pi*luminosity_tot_fit')./(sigma*t_color_bsg'.^4)).*factor;
         bandL(i,:,2)=((pi*luminosity_fit')./(sigma*t_color_bsg'.^4)).*factor;
         bandL(i,:,3)=((pi*luminosity90_fit')./(sigma*t_color_bsg'.^4)).*factor;
-        bandL(i,:,4)=((pi*L_s')./(sigma*T_c'.^4)).*factor1;
+        bandL(i,:,4)=((pi*L_s)./(sigma*T_c.^4)).*factor1';
 
     end
 
@@ -215,7 +228,7 @@ ax2.XTick=[]
 z=linspace(0,1,7);
 ax2.YTick=z(1:6);
 ax1.YTick=-10:-5;
-ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-10:-5))/2.5))/1e-7),1));
+ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-10:-4))/2.5))/1e-7),1));
 
 set(gca,'LineWidth',1.5,'FontSize',12);
 
@@ -226,11 +239,11 @@ ax2 = axes('Position',ax1_pos,...
     'Color','none');
 ax2.YDir='reverse';
 ax2.XTick=[]
-z=linspace(0,1,7);
-ax2.YTick=z(1:6);
+z=linspace(0,1,8);
+ax2.YTick=z(1:7);
 %ax2.YLabel.String='Log(L[erg/s])'
 %ax1.YTick=-13:-8;
-ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-13:-8))/2.5))/1e-7),1));
+ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-14:-7))/2.5))/1e-7),1));
 
  
 
@@ -249,8 +262,8 @@ ax2 = axes('Position',ax1_pos,...
     'Color','none');
 ax2.YDir='reverse';
 ax2.XTick=[]
-z=linspace(0,1,6);
-ax2.YTick=z(1:5);
+z=linspace(0,1,5);
+ax2.YTick=z(1:4);
 ax1_2.YTick=-24:2:-16;
 ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-22:2:-14))/2.5))/1e-7),1));
 

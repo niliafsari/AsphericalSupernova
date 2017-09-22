@@ -1,5 +1,5 @@
-mtot=0.0048187313;
-etot=0.0130949665;
+mtot=4.82611e-3*2;
+etot=1.3402e-2*2;
 rtot=0.5;
 msun=1.989e33;
 rsun=6.955e10;
@@ -50,17 +50,27 @@ bands=[ G;  FUV ; X ];
 load('/home/nilou/Data/processeddata/BSG/luminosity_0.mat','luminosity')
 load('/home/nilou/Data/processeddata/BSG/luminosity_90.mat','luminosity90')
 load('/home/nilou/Data/processeddata/BSG/luminosity_tot.mat','luminosity_tot')
+load('/home/nilou/Data/processeddata/ic/spherical_ic.mat','log_l','time_axis_log','spherical_LC_NS');
 
 luminosity(23)=4.2e42;
 luminosity90(23)=2.1e42;
 luminosity_tot(23)=2e42;
 
 
-load('/home/nilou/Data/processeddata/ic/colortemp_tot_v1.mat','t_color_bsg');
-t_color_ic=t_color_bsg(23:32)*30;
 
-time=load('/home/nilou/Data/timesteps.mat');
+load('/home/nilou/Data/processeddata/ic/colortemp_ic_spherical.mat','t_loc_all','time_ic','etha_all');
+
+fff= fit(log10(time_ic(105:140)-time_ic(105)+time_ic(66)),log10(t_loc_all(105:140)/11604.52),'rat34');
+
+
+
+load('/home/nilou/Data/processeddata/ic/colortemp_tot_v1.mat','t_color_bsg');
+t_color_ic=t_color_bsg(23:32)*5;
+
+time=load('/home/nilou/Data/processeddata/timesteps.mat');
 time_ic=(time.time1*tconv_ic);
+T_c=(10.^fff(log10(time_ic(23:32)')))*11604.52;
+
 f= fit(log10(time_ic(23:40)),log10(luminosity(23:40)/9.7)','rat44');
 luminosity_fit=10.^f(log10(time_ic(23:32)'));
 f= fit(log10(time_ic(23:40)),log10(2*luminosity90(23:40)/9.7)','rat44');
@@ -68,31 +78,33 @@ luminosity90_fit=10.^f(log10(time_ic(23:32)'));
 f= fit(log10(time_ic(23:40)),log10(2*luminosity_tot(23:40)/9.7)','rat44');
 luminosity_tot_fit=10.^f(log10(time_ic(23:32)'));
 
+ff= fit(time_axis_log,log_l,'rat44');
+L_s=10.^ff(log10(time_ic(23:32)'));
 
 
 
 bandL=zeros(length(bands),10,4);
 factor=zeros(1,10);
 
-t_sph=time_ic(23:32)-time_ic(23)+0.46;
-t_s=0.5*3600* (m/(15*msun))^0.41*(r/(50*rsun))^1.33*(e/1e51)^-0.58;
-L_s=zeros(length(time_ic(23:32)),1);
-L_s(t_sph<t_s)=2.5*1e44*(m/(15*msun))^-0.33*(r/(50*rsun))^2.3*(e/1e51)^0.34*(t_sph(t_sph<t_s)./60).^(-4/3);
-L_s(t_sph>t_s)=2*10^42*(m/(15*msun))^-0.73*(r/(50*rsun))*(e/1e51)^0.91.*(t_sph(t_sph>t_s)./(3600)).^-0.35;
-
-T_c=zeros(10,1);
-t_s=0.5*3600* (m/(15*msun))^0.41*(r/(50*rsun))^1.33*(e/1e51)^-0.58;
-t1=200*(m/(15*msun))^-0.24*(r/(5*rsun))^0.94*(e/1e51)^0.29;
-t2=400*(m/(15*msun))^-0.77*(r/(5*rsun))^0.62*(e/1e51)^0.99;
-
-
-T_c(t_sph<t_s)=10^3*(m/(15*msun))^-1.5*(r/(5*rsun))^-0.2 *(e/1e51)^1.4* t_sph(t_sph<t_s).^-0.4;
-T_c(t_sph>t_s & t_sph<t1)=140*(m/(15*msun))^-1.2*(r/(5*rsun))^-0.9 *(e/1e51)^1.7* (t_sph(t_sph>t_s & t_sph<t1)/t_s).^-2.2;
-T_c(t_sph>t1 & t_sph<t2)=40*(m/(15*msun))^0.05*(r/(5*rsun))^0.25 *(e/1e51)^-0.1* (t_sph(t_sph>t1 & t_sph<t2)/60).^-0.4;
-T_c(t_sph>t2)=5*(m/(15*msun))^-0.11*(r/(5*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t2)/3600).^-0.61;
-
-
-T_c=T_c*11604.52;
+% t_sph=time_ic(23:32)-time_ic(23)+0.46;
+% t_s=0.5*3600* (m/(15*msun))^0.41*(r/(50*rsun))^1.33*(e/1e51)^-0.58;
+% L_s=zeros(length(time_ic(23:32)),1);
+% L_s(t_sph<t_s)=2.5*1e44*(m/(15*msun))^-0.33*(r/(50*rsun))^2.3*(e/1e51)^0.34*(t_sph(t_sph<t_s)./60).^(-4/3);
+% L_s(t_sph>t_s)=2*10^42*(m/(15*msun))^-0.73*(r/(50*rsun))*(e/1e51)^0.91.*(t_sph(t_sph>t_s)./(3600)).^-0.35;
+% 
+% T_c=zeros(10,1);
+% t_s=0.5*3600* (m/(15*msun))^0.41*(r/(50*rsun))^1.33*(e/1e51)^-0.58;
+% t1=200*(m/(15*msun))^-0.24*(r/(5*rsun))^0.94*(e/1e51)^0.29;
+% t2=400*(m/(15*msun))^-0.77*(r/(5*rsun))^0.62*(e/1e51)^0.99;
+% 
+% 
+% T_c(t_sph<t_s)=10^3*(m/(15*msun))^-1.5*(r/(5*rsun))^-0.2 *(e/1e51)^1.4* t_sph(t_sph<t_s).^-0.4;
+% T_c(t_sph>t_s & t_sph<t1)=140*(m/(15*msun))^-1.2*(r/(5*rsun))^-0.9 *(e/1e51)^1.7* (t_sph(t_sph>t_s & t_sph<t1)/t_s).^-2.2;
+% T_c(t_sph>t1 & t_sph<t2)=40*(m/(15*msun))^0.05*(r/(5*rsun))^0.25 *(e/1e51)^-0.1* (t_sph(t_sph>t1 & t_sph<t2)/60).^-0.4;
+% T_c(t_sph>t2)=5*(m/(15*msun))^-0.11*(r/(5*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t2)/3600).^-0.61;
+% 
+% 
+% T_c=T_c*11604.52;
 
 for i=1:length(bands)
     if (i==length(bands))

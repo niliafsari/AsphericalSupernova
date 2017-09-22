@@ -1,6 +1,9 @@
-mtot=0.0048187313;
-etot=0.0130949665;
+mtot=4.82611e-3*2;
+etot=1.3402e-2*2;
 rtot=0.5;
+msun=1.989e33;
+rsun=6.955e10;
+
 ttot=rtot/sqrt(etot/mtot);
 msun=1.989e33;
 rsun=6.955e10;

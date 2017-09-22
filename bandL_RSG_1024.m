@@ -77,6 +77,14 @@ f= fit(log10(time_rsg1(109:210)-time_rsg1(109)+time_rsg1(65)+927.3),log10(t_loc_
 T_c=(10.^f(log10(time_rsg(173:1:420)')))*11604.52;
 %plot(log10(time_rsg1(109:210)-time_rsg1(109)+time_rsg1(65)+927.3),t_t,'--k','LineWidth',1.5),hold on,
 
+t_sph=time_rsg(173:1:420)-time_rsg(173)+927.3;
+t_s=14*3600* (m/(15*msun))^0.43*(r/(500*rsun))^1.26*(e/1e51)^-0.56;
+
+t_s=14*3600* (m/(15*msun))^0.43*(r/(500*rsun))^1.26*(e/1e51)^-0.56;
+T_c(t_sph<t_s)=10*(m/(15*msun))^-0.22*(r/(500*rsun))^0.12 *(e/1e51)^0.23* (t_sph(t_sph<t_s)/3600).^-0.36;
+T_c(t_sph>t_s )=3*(m/(15*msun))^-0.13*(r/(500*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t_s)/(24*3600)).^-0.56;
+
+T_c=T_c*11604.52;
 
 bandL=zeros(length(bands),248,4);
 factor=zeros(1,248);
@@ -172,7 +180,7 @@ ax2.XTick=[]
 z=linspace(0,1,8);
 ax2.YTick=z(1:7);
 ax1.YTick
-ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-12:0.5:-8.5))/2.5))/1e-7),1));
+ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-15:1:-9))/2.5))/1e-7),1));
 
 set(gca,'LineWidth',1.5,'FontSize',12);
 
@@ -187,7 +195,7 @@ z=linspace(0,1,8);
 ax2.YTick=z(1:7);
 ax2.YLabel.String='Log(L[erg/s])'
 %ax1.YTick=-13:-8;
-ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-15:0.5:-11.5))/2.5))/1e-7),1));
+ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-18:1:-12))/2.5))/1e-7),1));
 
  
 
