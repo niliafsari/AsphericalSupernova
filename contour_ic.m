@@ -29,7 +29,7 @@ for i=1:2048
     end
 end
 
-cita=1;
+cita=0;
 
 if cita==1
     path='/mnt/scratch-lustre/nafsari/Data2048';
@@ -42,7 +42,7 @@ luminosity=zeros(1,501-201);
 %load('luminosity.mat', 'luminosity');
 time=load([path '/processeddata/timesteps_1024.mat']);
 clear diff_bsg
-for t=161:230
+for t=234:234
     t
     name=[ path '/rawdata/dcodeunit/dcodeunit1024_' int2str(t-1) '.mat'];
     load(name,'d');
@@ -61,7 +61,7 @@ for t=161:230
     elseif (t>189 & t<331)
         ke=25;
     else
-        ke=55;
+        ke=90;
     end
     temp=zeros(2048+2*ke,2048+ke);
     temp(1:2048,1:2048)=diff_frontBSG;

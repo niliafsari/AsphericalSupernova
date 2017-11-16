@@ -45,9 +45,9 @@ time=load('/home/nilou/Data/processeddata/timesteps.mat');
     set(myFigure,'units','points','position',[299.2500   66.0000  609.7500  519.0000],'Color','w') 
 
 for t=[28]
-    name=['/home/nilou/Data/rawdata/pressure/pres2048_' int2str(t) '.csv'] ;
+    name=['/home/nilou/Data/rawdata/pressure/pres1024_' int2str(t) '.csv'] ;
     pres= csvread(name)/ptot;
-    name=['/home/nilou/Data/rawdata/density/dens2048_' int2str(t) '.csv'] ;
+    name=['/home/nilou/Data/rawdata/density/dens1024_' int2str(t) '.csv'] ;
     dens= csvread(name)/rhotot;
     
     dens_l = griddata(xx,yy,dens,xx_l,yy_l);
@@ -140,7 +140,7 @@ for t=[28]
     
 %     set(gca,'LineWidth',2,'FontSize',12);
 %     (time.time1(t+1)/ttot)
-     name=['/home/nilou/Data/plot/allquantity/2048_' num2str(t,'%02d') '.pdf'];
+     name=['/home/nilou/Data/plot/allquantity/1024_' num2str(t,'%02d') '.pdf'];
      % set(gcf, 'PaperPosition', [0 0 6.5 5.5]); %Position plot at left hand corner with width 5 and height 5.
      % set(gcf, 'PaperSize', [6.5 5.5]); %Set the paper to have width 5 and height 5.
      %print(gcf, '-dpng', '-r1100', name)

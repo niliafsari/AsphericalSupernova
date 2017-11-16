@@ -33,7 +33,7 @@ for i=1:2048
 end
 gradp=zeros(2048,2048);
 
-cita=1;
+cita=0;
 
 if cita==1
     path='/mnt/scratch-lustre/nafsari/Data2048';
@@ -54,7 +54,7 @@ end
 % luminosity=temp.luminosity;
 time=load([path '/processeddata/timesteps_1024.mat']);
 
-for t=161:230
+for t=199:199
     t
     load([path '/processeddata/ic/diff_ic_1024_' num2str(t-1) '.mat'], 'diff_bsg'); 
     name=[ path '/rawdata/gradp2/gradp21024_' int2str(t-1) '.mat'];
@@ -87,9 +87,9 @@ for t=161:230
     phidiff_n=atan(xdiff_n./ydiff_n);
     
     size(rdiff_n)
-    rdiff_n=rdiff_n(phidiff_n<=prctile(phidiff_n,99.5));
-    xdiff_n=xdiff_n(phidiff_n<=prctile(phidiff_n,99.5));
-    ydiff_n=ydiff_n(phidiff_n<=prctile(phidiff_n,99.5));
+    rdiff_n=rdiff_n(phidiff_n<=prctile(phidiff_n,98));
+    xdiff_n=xdiff_n(phidiff_n<=prctile(phidiff_n,98));
+    ydiff_n=ydiff_n(phidiff_n<=prctile(phidiff_n,98));
     phidiff_n=atan(xdiff_n./ydiff_n);
     
     if t>173
@@ -115,7 +115,7 @@ for t=161:230
         x=x';
         fit1 = fit(x,rdiff','poly6');
         fdata = feval(fit1,x);
-        I = abs(fdata - rdiff') > 0.4*std(rdiff');
+        I = abs(fdata - rdiff') > 0.25*std(rdiff');
         outliers = excludedata(x,rdiff','indices',I);
         sum(outliers)
 
@@ -141,7 +141,7 @@ for t=161:230
             if (length(P)>0)
                 DT = delaunayTriangulation(P);
                 Q = convexHull(DT);
-                Q(1)=[];
+                Q(1:3)=[];
                 Q=flipud(Q);
                 rdiff_k=rdiff_k(Q);
                 xdiff_k=xdiff_k(Q);
@@ -236,15 +236,15 @@ for t=161:230
        
     myFigure = figure('PaperPositionMode','auto','Position',a);
       
-%     set(myFigure,'units','points','position',[x0,y0,width,height]) 
-%     h=surf(xx*2/rconv,yy*2/rconv,log10(density));hold on
-%     grid off
-%     set(h,'LineStyle','none');
-%     colormap jet
-%     cl=colorbar;
-    scatter(P(:,1)*2/rconv,P(:,2)*2/rconv,1,'b');  
+    set(myFigure,'units','points','position',[x0,y0,width,height]) 
+    h=surf(xx*2/rconv,yy*2/rconv,log10(density));hold on
+    grid off
+    set(h,'LineStyle','none');
+    colormap jet
+    cl=colorbar;
+    %scatter(P(:,1)*2/rconv,P(:,2)*2/rconv,1,'b');  
     hold on
-    plot(xdiff_t*2/rconv,ydiff_t*2/rconv,'r');
+    plot(xdiff*2/rconv,ydiff*2/rconv,'r');
     view(2)
     xlabel('x/R_*');
     ylabel('y/R_*');
@@ -257,6 +257,6 @@ for t=161:230
     export_fig(name, '-dpng')
 
 end
-save([path '/processeddata/ic/luminosity_1024_0.mat'],'luminosity')
-save([path '/processeddata/ic/luminosity_1024_90.mat'],'luminosity90')
-save([path '/processeddata/ic/luminosity_1024_tot.mat'],'luminosity_tot')
+% save([path '/processeddata/ic/luminosity_1024_0.mat'],'luminosity')
+% save([path '/processeddata/ic/luminosity_1024_90.mat'],'luminosity90')
+% save([path '/processeddata/ic/luminosity_1024_tot.mat'],'luminosity_tot')

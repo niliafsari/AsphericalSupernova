@@ -25,6 +25,7 @@ rhoconv=mconv/rconv^3;
 vconv=sqrt(econv/mconv);
 tconv=rconv/vconv;
 
+v_c=sqrt(e/m);
 
 theta=linspace(0,pi/2,2048);
 
@@ -39,7 +40,7 @@ for i=1:2048
 end
 gradp=zeros(2048,2048);
 
-cita=1;
+cita=0;
 
 if cita==1
     path='/mnt/scratch-lustre/nafsari/Data2048';
@@ -48,12 +49,12 @@ else
 end
 syms x
 f=@(x) 1./(x.^(3/2).*(1-x.^-4))
-
+load([path '/processeddata/ic/colortem_1024_tot.mat'],'t_tot')
 time=load([path '/processeddata/timesteps_1024.mat']);
 time_rsg=time.time1*tconv;
 C=3.4e36;
 prefac=C*2.7*k_B*rhoconv^2/(3^(7/8)*a^(1/8)*pconv^(7/8));
-for t=162:230
+for t=200:200
     t
     load([path '/processeddata/ic/diff_ic_1024_' num2str(t-1) '.mat'], 'diff_bsg'); 
     name=[ path '/rawdata/gradp2/gradp21024_' int2str(t-1) '.mat'];
@@ -63,7 +64,11 @@ for t=162:230
         name=[path '/rawdata/pressure/pres1024_' int2str(t-1) '.csv'] ;
         pres= csvread(name).*pconv;
         name=[path '/rawdata/density/dens1024_' int2str(t-1) '.csv'] ;
-        density= csvread(name).*rhoconv;       
+        density= csvread(name).*rhoconv;    
+        name=[path '/rawdata/velocity/velr1024_' int2str(t-1) '.csv'] ;
+        velr= csvread(name).*vconv;  
+        name=[path '/rawdata/velocity/velth1024_' int2str(t-1) '.csv'] ;
+        velt= csvread(name).*vconv;  
     else
         name=[path '/rawdata/pressure/pres1024_' int2str(t-1) '.mat'] ;
         load(name,'pres_data');
@@ -71,6 +76,12 @@ for t=162:230
         name=[path '/rawdata/density/dens1024_' int2str(t-1) '.mat'] ;
         load(name,'dens_data');
         density=dens_data*rhoconv;
+        name=[path '/rawdata/velocity/velr1024_' int2str(t-1) '.mat'] ;  
+        load(name,'velx_data');
+        velr= velx_data*vconv;
+        name=[path '/rawdata/velocity/velth1024_' int2str(t-1) '.mat'] ;
+        load(name,'vely_data');
+        velt= vely_data*vconv;
     end
      name=[path '/rawdata/gfunction/gfun1024_' int2str(t-1) '.mat'] ;
      load(name,'gfun_data');
@@ -94,9 +105,9 @@ for t=162:230
     phidiff_n=atan(xdiff_n./ydiff_n);
     
     size(rdiff_n)
-    rdiff_n=rdiff_n(phidiff_n<=prctile(phidiff_n,99.5));
-    xdiff_n=xdiff_n(phidiff_n<=prctile(phidiff_n,99.5));
-    ydiff_n=ydiff_n(phidiff_n<=prctile(phidiff_n,99.5));
+    rdiff_n=rdiff_n(phidiff_n<=prctile(phidiff_n,98));
+    xdiff_n=xdiff_n(phidiff_n<=prctile(phidiff_n,98));
+    ydiff_n=ydiff_n(phidiff_n<=prctile(phidiff_n,98));
     phidiff_n=atan(xdiff_n./ydiff_n);
     
     if t>173
@@ -117,12 +128,12 @@ for t=162:230
     xdiff=xdiff_t(I);
     ydiff=ydiff_t(I);    
     phidiff=atan(xdiff./ydiff);
-    if t>173
+    if t>183
         x=1:length(rdiff);
         x=x';
         fit1 = fit(x,rdiff','poly6');
         fdata = feval(fit1,x);
-        I = abs(fdata - rdiff') > 0.4*std(rdiff');
+        I = abs(fdata - rdiff') > 0.25*std(rdiff');
         outliers = excludedata(x,rdiff','indices',I);
         sum(outliers)
 
@@ -148,7 +159,9 @@ for t=162:230
             if (length(P)>0)
                 DT = delaunayTriangulation(P);
                 Q = convexHull(DT);
-                Q(1)=[];
+                if (length(P)>1)
+                    Q(1:2)=[];
+                end
                 Q=flipud(Q);
                 rdiff_k=rdiff_k(Q);
                 xdiff_k=xdiff_k(Q);
@@ -177,7 +190,7 @@ for t=162:230
     end
     index_r(index_r>2048)=2048;
     %luminosity(t)=0;
-    entropy=(pres./(density.^1.333))/((e/r^3)/(m/r^3)^1.3333);
+    entropy=((pres./(density.^1.333))/((e/r^3)/(m/r^3)^1.3333));
     ent=zeros(1,length(index_r));
         gfunction=zeros(1,length(index_r));
     flux1=zeros(1,length(index_r));
@@ -186,6 +199,9 @@ for t=162:230
     factor_tot=zeros(1,length(index_r));
     densityk=zeros(1,length(index_r));
     gradpk=zeros(1,length(index_r));
+    entropyk=zeros(1,length(index_r));
+    velrk=zeros(1,length(index_r));
+    veltk=zeros(1,length(index_r));
     dL=zeros(1,length(index_r));
     tempBB=zeros(1,length(index_r));
     etha=zeros(1,length(index_r));
@@ -194,6 +210,9 @@ for t=162:230
     for k=2:length(index_r)
          gfunction(k)=gfun(index_r(k),index_phi(k));
          densityk(k)=density(index_r(k),index_phi(k));
+         entropyk(k)=entropy(index_r(k),index_phi(k));
+%          velrk(k)=velr(index_r(k),index_phi(k))/v_c;
+%          veltk(k)=velt(index_r(k),index_phi(k))/v_c;
          gradpk(k)=gradp(index_r(k),index_phi(k));
          flux1(k)= (c/(kappa* density(index_r(k),index_phi(k))))*gradp(index_r(k),index_phi(k));
          rdiffm=(rdiff(k)+rdiff(k-1))/2;
@@ -218,33 +237,34 @@ for t=162:230
              t_c(k)=((10.^g(gfunction(k)))+1)*tempBB(k)/(1+(1/(etha(k)^2)))^(1/17);
          end
     end
-    t_tot(1,t)= dot(dL,t_c)/dot(flux1,factor_tot)
 
+    dat=[rdiff' phidiff' entropyk' velrk' veltk'];
+    csvwrite([path '/processeddata/diff_data/diffdata_' int2str(t) '.csv'],dat)
     
-%         close all
-%     a=get(gcf,'Position');
-%     xx0=15;
-%     y0=15;
-%     width=650;
-%     height=650;
-%        
-%     myFigure = figure('PaperPositionMode','auto','Position',a);
-%       
-%     set(myFigure,'units','points','position',[xx0,y0,width,height]) 
-%     h=surf(xx*2/rconv,yy*2/rconv,log10(density));hold on
-%     grid off
-%     set(h,'LineStyle','none');
-%     colormap jet
-%     cl=colorbar;
-% 
-%     hold on
-%     scatter(xdiff*2/rconv,ydiff*2/rconv,'r');
-%     view(2)
-%     xlabel('x/R_*');
-%     ylabel('y/R_*');
-%     title(['t=' num2str(time.time1(t)*tconv,3) ' (sec)']);
-%     axis equal
-%     view(2)
-%    axis([0 4 0 4])
+        close all
+    a=get(gcf,'Position');
+    xx0=15;
+    y0=15;
+    width=650;
+    height=650;
+       
+    myFigure = figure('PaperPositionMode','auto','Position',a);
+      
+    set(myFigure,'units','points','position',[xx0,y0,width,height]) 
+    h=surf(xx*2/rconv,yy*2/rconv,log10(entropy));hold on
+    grid off
+    set(h,'LineStyle','none');
+    colormap jet
+    cl=colorbar;
+    alpha(.6)
+    hold on
+    plot(xdiff*2/rconv,ydiff*2/rconv,'r');
+    view(2)
+    xlabel('x/R_*');
+    ylabel('y/R_*');
+    title(['t=' num2str(time.time1(t)*tconv,3) ' (sec)']);
+    axis equal
+    view(2)
+    axis([0 4 0 4])
 end
-save([path '/processeddata/ic/colortem_1024_tot.mat'],'t_tot')
+%save([path '/processeddata/ic/colortem_1024_tot.mat'],'t_tot')

@@ -56,14 +56,17 @@ time_ic1=(time.time1*tconv);
 load('/home/nilou/Data/processeddata/ic/colortemp_ic_spherical.mat','t_loc_all','time_ic','etha_all');
 
 
-time_ic([113 114 115])=[];
-t_loc_all([113 114 115])=[];
+time_ic([113 114 115 116])=[];
+t_loc_all([113 114 115 116])=[];
+
+ time_ic(125:132)=[];
+t_loc_all(125:132)=[];
 
 plot(log10(time_ic1(23:32)),log10(t_color_bsg(1,23:32)*5/11604.52),'k','LineWidth',2); hold on
 
-f= fit(log10(time_ic(105:140)-time_ic(105)+time_ic(66)),log10(t_loc_all(105:140)/11604.52),'rat34');
-t_t=f(log10(time_ic(105:137)-time_ic(105)+time_ic(66)));
-plot(log10(time_ic(105:137)-time_ic(105)+time_ic(66)),t_t,'--k','LineWidth',1.5),hold on,
+f= fit(log10(time_ic(105:131)-time_ic(105)+time_ic(66)),log10(t_loc_all(105:131)*10/11604.52),'spline');
+t_t=f(log10(time_ic(105:128)-time_ic(105)+time_ic(66)));
+plot(log10(time_ic(105:128)-time_ic(105)+time_ic(66)),t_t,'--k','LineWidth',1.5),hold on,
 
 % plot(log10(time_ic(105:140)-time_ic(105)+time_ic(66)),log10(t_loc_all(105:140)/11604.52),'--r','LineWidth',1.5),hold on,
 
