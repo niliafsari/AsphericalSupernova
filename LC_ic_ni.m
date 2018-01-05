@@ -1,5 +1,5 @@
-mtot=4.82611e-3*2;
-etot=1.3402e-2*2;
+mtot= 4.8261095e-3*2;
+etot=1.31610869e-2*2;
 rtot=0.5;
 msun=1.989e33;
 rsun=6.955e10;
@@ -54,26 +54,19 @@ end
 % luminosity=temp.luminosity;
 time=load([path '/processeddata/timesteps_1024.mat']);
 
-for t=175:230
+for t=285:340
     t
-    load([path '/processeddata/ic/diff_ic_1024_' num2str(t-1) '.mat'], 'diff_bsg'); 
-    name=[ path '/rawdata/gradp2/gradp21024_' int2str(t-1) '.mat'];
+    load([path '/processeddata/ic/diff_icni_1024_' num2str(t-1) '.mat'], 'diff_bsg'); 
+    name=[ path '/rawdata/gradp2/gradp2_ni1024_' int2str(t-1) '.mat'];
     load(name,'gradp2'); 
     gradp=sqrt(gradp2*pconv^2/rconv^2);
-    if (t<=200 && t~=176)
-        name=[path '/rawdata/pressure/pres1024_' int2str(t-1) '.csv'] ;
-        pres= csvread(name).*pconv;
-        name=[path '/rawdata/density/dens1024_' int2str(t-1) '.csv'] ;
-        density= csvread(name).*rhoconv;       
-    else
-        name=[path '/rawdata/pressure/pres1024_' int2str(t-1) '.mat'] ;
-        load(name,'pres_data');
-        pres=pres_data*pconv;
-        name=[path '/rawdata/density/dens1024_' int2str(t-1) '.mat'] ;
-        load(name,'dens_data');
-        density=dens_data*rhoconv;
-    end
 
+    name=[path '/rawdata/pressure/pres_ni1024_' int2str(t-1) '.mat'] ;
+    load(name,'pres_data');
+    pres=pres_data*pconv;
+    name=[path '/rawdata/density/dens_ni1024_' int2str(t-1) '.mat'] ;
+    load(name,'dens_data');
+    density=dens_data*rhoconv;
 
     diff_bsg_t=diff_bsg(:,2:length(diff_bsg));
     diff_bsg_t=transpose(diff_bsg_t);
@@ -87,57 +80,56 @@ for t=175:230
     phidiff_n=atan(xdiff_n./ydiff_n);
     
     [phidiff_n,I]=sort(phidiff_n);
-    rdiff_n=rdiff_n(I);   
+    rdiff_n=rdiff_n(I);  
     xdiff_n=xdiff_n(I);
-    ydiff_n=ydiff_n(I);  
-    
-    
-    if t>173
-        phidiff_t=phidiff_n(rdiff_n>(0.5*rconv));
-        xdiff_t=xdiff_n(rdiff_n>(0.5*rconv));
-        ydiff_t=ydiff_n(rdiff_n>(0.5*rconv));
-        rdiff_t=rdiff_n(rdiff_n>(0.5*rconv));
-    else
-        phidiff_t=phidiff_n;
-        xdiff_t=xdiff_n;
-        ydiff_t=ydiff_n;
-        rdiff_t=rdiff_n;
-    end
-    
-    V=99.5;
-    rdiff_t=rdiff_t(phidiff_t<=prctile(phidiff_t,V));
-    xdiff_t=xdiff_t(phidiff_t<=prctile(phidiff_t,V));
-    ydiff_t=ydiff_t(phidiff_t<=prctile(phidiff_t,V));
-    phidiff_t=atan(xdiff_t./ydiff_t);
+    ydiff_n=ydiff_n(I);    
 
-    [phidiff,I]=sort(phidiff_t);
-    rdiff=rdiff_t(I);    
-    xdiff=xdiff_t(I);
-    ydiff=ydiff_t(I);    
-    phidiff=atan(xdiff./ydiff);
-    if t>173
-        T=0.25;
+    
+
+    phidiff_t=phidiff_n(rdiff_n>(0.5*rconv));
+    xdiff_t=xdiff_n(rdiff_n>(0.5*rconv));
+    ydiff_t=ydiff_n(rdiff_n>(0.5*rconv));
+    rdiff_t=rdiff_n(rdiff_n>(0.5*rconv));
+
+    
+    if t>290
+        V=99.5;
+        rdiff_t=rdiff_t(phidiff_t<=prctile(phidiff_t,V));
+        xdiff_t=xdiff_t(phidiff_t<=prctile(phidiff_t,V));
+        ydiff_t=ydiff_t(phidiff_t<=prctile(phidiff_t,V));
+        phidiff_t=atan(xdiff_t./ydiff_t);
+
+
+
+        [phidiff,I]=sort(phidiff_t);
+        rdiff=rdiff_t(I);  
+        xdiff=xdiff_t(I);
+        ydiff=ydiff_t(I);
+        
+        if t>300
         x=1:length(rdiff);
         x=x';
-        fit1 = fit(x,rdiff','poly6');
+        fit1 = fit(x,rdiff','poly5');
         fdata = feval(fit1,x);
-        I = abs(fdata - rdiff') > T*std(rdiff');
+        I = abs(fdata - rdiff') > 0.2*std(rdiff');
         outliers = excludedata(x,rdiff','indices',I);
-        sum(outliers)
+
 
         rdiff(outliers)=[];
         xdiff(outliers)=[];
         ydiff(outliers)=[];
         phidiff=atan(xdiff./ydiff);
-          [xmax,I]=max(xdiff);
-          rdiff_k=rdiff(phidiff>phidiff(I));
-          xdiff_k=xdiff(phidiff>phidiff(I));
-          ydiff_k=ydiff(phidiff>phidiff(I));
-          rdiff=rdiff(phidiff<=phidiff(I));
-          xdiff=xdiff(phidiff<=phidiff(I));
-          ydiff=ydiff(phidiff<=phidiff(I));
-          P=[xdiff_k', ydiff_k'];
-          if (length(P)>0)
+        end
+        [xmax,I]=max(xdiff);
+        rdiff_k=rdiff(phidiff>phidiff(I));
+        xdiff_k=xdiff(phidiff>phidiff(I));
+        ydiff_k=ydiff(phidiff>phidiff(I));
+        rdiff=rdiff(phidiff<=phidiff(I));
+        xdiff=xdiff(phidiff<=phidiff(I));
+        ydiff=ydiff(phidiff<=phidiff(I));
+        phidiff=phidiff(phidiff<=phidiff(I));
+        P=[xdiff_k', ydiff_k'];
+        if (length(P)>0)
             ydiff_k=ydiff_k-rconv;
             phidiff_k=atan(xdiff_k./ydiff_k);
             phidiff_k(phidiff_k<0)=pi+phidiff_k(phidiff_k<0);
@@ -145,16 +137,21 @@ for t=175:230
             rdiff_k=rdiff_k(I);
             xdiff_k=xdiff_k(I);
             ydiff_k=ydiff_k(I)+rconv; 
-          else
+        else
             rdiff_k=[];
             xdiff_k=[];
             ydiff_k=[];
             phidiff_k=[];
-          end
+        end
         rdiff=[rdiff rdiff_k];
         xdiff=[xdiff xdiff_k];
         ydiff=[ydiff ydiff_k];
         phidiff=atan(xdiff./ydiff);
+    else
+        [phidiff,I]=sort(phidiff_t);
+        rdiff=rdiff_t(I);  
+        xdiff=xdiff_t(I);
+        ydiff=ydiff_t(I);   
     end
     [xmax,I]=max(xdiff);
     [ymax,U]=max(ydiff);
@@ -173,7 +170,6 @@ for t=175:230
     factor_tot=zeros(1,length(index_r));
     densityk=zeros(1,length(index_r));
     gradpk=zeros(1,length(index_r));
-    %luminosity(t)=0;
     for k=2:length(index_r)
          densityk(k)=density(index_r(k),index_phi(k));
          gradpk(k)=gradp(index_r(k),index_phi(k));
@@ -249,11 +245,11 @@ for t=175:230
     axis equal
     view(2)
    axis([0 4 0 4])
-    name=[path '/plot/icdiff/ic_1024_' num2str(t) '.png'];
+    name=[path '/plot/icdiff/ic_1024ni_' num2str(t) '.png'];
     print(gcf, '-dpng', name)
     export_fig(name, '-dpng')
 
 end
-save([path '/processeddata/ic/luminosity_1024_0.mat'],'luminosity')
-save([path '/processeddata/ic/luminosity_1024_90.mat'],'luminosity90')
-save([path '/processeddata/ic/luminosity_1024_tot.mat'],'luminosity_tot')
+save([path '/processeddata/ic/luminosityni_1024_0.mat'],'luminosity')
+save([path '/processeddata/ic/luminosityni_1024_90.mat'],'luminosity90')
+save([path '/processeddata/ic/luminosityni_1024_tot.mat'],'luminosity_tot')

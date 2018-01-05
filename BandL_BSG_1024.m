@@ -49,7 +49,8 @@ end
 load([path '/processeddata/BSG/luminosity_1024_0.mat'],'luminosity')
 load([path '/processeddata/BSG/luminosity_1024_90.mat'],'luminosity90')
 load([path '/processeddata/BSG/luminosity_1024_tot.mat'],'luminosity_tot')
-load('/home/nilou/Data/processeddata/BSG/spherical_BSG.mat','log_l','time_axis_log','spherical_LC_NS');
+
+load('/home/nilou/Data/Spherical/processeddata/BSG/spherical_BSG.mat','log_l','time_axis_log','spherical_LC_NS');
 
 time=load([path '/processeddata/timesteps_1024.mat']);
 
@@ -69,16 +70,12 @@ fff= fit(log10(time_bsg(173:2:352)),log10(2*luminosity90(1,173:2:352))','rat44')
 luminosity90_fit=10.^fff(log10(time_bsg(173:2:352-14)'));
 %plot(log10(time_bsg(173:2:352)),luminosity90_fit,'--k','LineWidth',1.5),hold on,
 
-ff= fit(time_axis_log(1:80),log_l(1:80),'poly4');
-L_s=10.^ff(log10(time_bsg(173:2:352-14)'));
+ff= fit(time_axis_log(1:80),log_l(1:80),'smoothingspline');
+L_s=10.^ff(log10(time_bsg(171:2:352-16)'));
 %plot(log10(time_bsg(173:2:352)),luminosity_tot_fit,'-.b','LineWidth',1.5),hold on,
 
 f= fit(log10(time_bsg(173:2:352)),log10(2*luminosity_tot(1,173:2:352))','rat44');
 luminosity_tot_fit=10.^f(log10(time_bsg(173:2:352-14)'));
-
-load('/home/nilou/Data/processeddata/BSG/colortemp_tot.mat','t_color_bsg');
-t_color_bsg=t_color_bsg(23:40);
-
 
 
 % load('/home/nilou/Data/processeddata/BSG/colortemp_BSG_spherical.mat','t_loc_all','time_rsg','etha_all');
@@ -89,19 +86,29 @@ ind=[173 194   201   202   203   204   205   206   208   209 210   213   214   2
 time_bsg(ind)=[];
 t_tot(ind)=[];
 
-t_sph=time_bsg(173:2:352-14)-time_bsg(173)+113.59;
-T_c=zeros(83,1);
-t_s=0.5*3600* (m/(15*msun))^0.41*(r/(50*rsun))^1.33*(e/1e51)^-0.58;
-% t1=13*60*(m/(10*msun))^-0.24*(r/(20*rsun))^0.94*(e/1e51)^0.29;
-% t2=20*60*(m/(10*msun))^-0.77*(r/(20*rsun))^0.62*(e/1e51)^0.99;
+% t_sph=time_bsg(173:2:352-14)-time_bsg(173)+113.59;
+% T_c=zeros(83,1);
+% t_s=0.5*3600* (m/(15*msun))^0.41*(r/(50*rsun))^1.33*(e/1e51)^-0.58;
+% % t1=13*60*(m/(10*msun))^-0.24*(r/(20*rsun))^0.94*(e/1e51)^0.29;
+% % t2=20*60*(m/(10*msun))^-0.77*(r/(20*rsun))^0.62*(e/1e51)^0.99;
+% 
+% T_c(t_sph<t_s)=50*(m/(25*msun))^-0.19*(r/(70*rsun))^0.06 *(e/1e51)^0.22* (t_sph(t_sph<t_s)/60).^-(16/45);
+% T_c(t_sph>t_s )=10*(m/(25*msun))^-0.11*(r/(70*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t_s)/3600).^-0.61;
+load('/home/nilou/Data/Spherical/processeddata/BSG/colortemp_BSG_spherical.mat','t_loc_all','time_rsg','etha_all');
 
-T_c(t_sph<t_s)=50*(m/(25*msun))^-0.19*(r/(70*rsun))^0.06 *(e/1e51)^0.22* (t_sph(t_sph<t_s)/60).^-(16/45);
-T_c(t_sph>t_s )=10*(m/(25*msun))^-0.11*(r/(70*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t_s)/3600).^-0.61;
-% T_c(t_sph>t1 & t_sph<t2)=15*(m/(10*msun))^0.05*(r/(20*rsun))^0.25 *(e/1e51)^-0.1* (t_sph(t_sph>t1 & t_sph<t2)/(15*60)).^-0.4;
-% T_c(t_sph>t2)=7*(m/(10*msun))^-0.11*(r/(20*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t2)/3600).^-0.61;
+% t_sph=time_rsg(146:230)-time_rsg(145);
+% T_c=zeros(length(t_sph),1);
+% t_s=0.5*3600* (m/(15*msun))^0.41*(r/(50*rsun))^1.33*(e/1e51)^-0.58;
+% T_c(t_sph<t_s)=50*(m/(25*msun))^-0.19*(r/(70*rsun))^0.06 *(e/1e51)^0.22* (t_sph(t_sph<t_s)/60).^-(16/45);
+% T_c(t_sph>t_s)=10*(m/(25*msun))^-0.11*(r/(70*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t_s)/3600).^-0.61;
+% t_c=T_c*11604.52;
+% f= fit(log10(time_rsg(146:1:230)-4.3021e+03),log10(t_c'/11604.52)','poly5');
+% T_c_1=(10.^f(log10(time_bsg(173:2:352-14)')))*11604.52;
 
-t_c=T_c*11604.52;
-f= fit(log10(time_bsg(173:2:352-14)),log10(t_c'/11604.52)','poly5');
+load('/home/nilou/Data/Spherical/processeddata/BSG/T_c_BSG_spherical.mat','T_c_BSG','time_BSG_log','time_rsg');
+
+
+f= fit(time_BSG_log,T_c_BSG,'smoothingspline');
 T_c=(10.^f(log10(time_bsg(173:2:352-14)')))*11604.52;
 
 fx= fit(log10(time_bsg(173:2:352-14)),log10(t_tot(173:2:352-14)/11604.52)','poly5');
@@ -128,10 +135,11 @@ factor1=zeros(1,83);
 % T_c(t_sph>t1 & t_sph<t2)=15*(m/(10*msun))^0.05*(r/(20*rsun))^0.25 *(e/1e51)^-0.1* (t_sph(t_sph>t1 & t_sph<t2)/(15*60)).^-0.4;
 % T_c(t_sph>t2)=7*(m/(10*msun))^-0.11*(r/(20*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t2)/3600).^-0.61;
 % 
-% L_s=zeros(length(time_bsg(23:40)),1);
+% t_sph=time_rsg(146:230)-time_rsg(145);
 % L_s(t_sph<t_s)=2.5*1e44*(m/(15*msun))^-0.33*(r/(50*rsun))^2.3*(e/1e51)^0.34*(t_sph(t_sph<t_s)./60).^(-4/3);
 % L_s(t_sph>t_s)=2*10^42*(m/(15*msun))^-0.73*(r/(50*rsun))*(e/1e51)^0.91.*(t_sph(t_sph>t_s)./(3600)).^-0.35;
-% 
+% ff= fit(time_rsg(146:230)-time_rsg(145),log_l(1:80),'smoothingspline');
+% L_s=10.^ff(log10(time_bsg(171:2:352-16)'));
 % T_c=T_c*11604.52;
 
 for i=1:length(bands)
@@ -168,7 +176,7 @@ close all
 x0=15;
 y0=15;
 width=350;
-height=900;
+height=950;
 myFigure = figure('PaperPositionMode','auto','Color','w');
 set(myFigure,'units','points','position',[x0,y0,width,height])
 
@@ -239,11 +247,11 @@ ax2 = axes('Position',ax1_pos,...
     'Color','none');
 ax2.YDir='reverse';
 ax2.XTick=[]
-z=linspace(0,1,8);
-ax2.YTick=z(1:7);
+z=linspace(0,1,7);
+ax2.YTick=z(1:6);
 %ax2.YLabel.String='Log(L[erg/s])'
-%ax1.YTick=-13:-8;
-ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-14:-7))/2.5))/1e-7),1));
+ax1_1.YTick=-13:-7;
+ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-13:-6))/2.5))/1e-7),1));
 
  
 
@@ -264,7 +272,7 @@ ax2.YDir='reverse';
 ax2.XTick=[]
 z=linspace(0,1,5);
 ax2.YTick=z(1:4);
-ax1_2.YTick=-24:2:-16;
+ax1_2.YTick=-22:2:-16;
 ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-22:2:-14))/2.5))/1e-7),1));
 
 set(gca,'LineWidth',1.5,'FontSize',12);

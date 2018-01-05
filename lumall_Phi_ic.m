@@ -33,7 +33,7 @@ tconv_ic=rconv/vconv;
 load('/home/nilou/Data/processeddata/BSG/luminosity_0.mat','luminosity')
 load('/home/nilou/Data/processeddata/BSG/luminosity_90.mat','luminosity90')
 load('/home/nilou/Data/processeddata/BSG/luminosity_tot.mat','luminosity_tot')
-load('/home/nilou/Data/processeddata/ic/spherical_ic.mat','log_l','time_axis_log','spherical_LC_NS');
+load('/home/nilou/Data/Spherical/processeddata/Ic/spherical_ic.mat','log_l','time_axis_log','spherical_LC_NS');
 
 time=load('/home/nilou/Data/processeddata/timesteps.mat');
 
@@ -91,7 +91,7 @@ luminosity_tot_fit=f(log10(time_ic(23:32)'));
 plot(log10(time_ic(23:32)),luminosity_tot_fit,'-.b','LineWidth',1.5),hold on,
 
  
-plot(time_axis_log+0.01,log_l,':m','LineWidth',1.5),hold on,
+plot(time_axis_log(1:45)+0.01,log_l(1:45),':m','LineWidth',1.5),hold on,
 
 
 xlabel('Log (t [sec])'); 
@@ -99,6 +99,6 @@ ylabel('Log (L_{tot} [erg/s])');
 
 legend('\Theta=0','\Theta=\pi/2','Total','Spherical','Location','northeast');
 set(gca,'LineWidth',2,'FontSize',12);
-name=['/home/nilou/Data/lum_ic.pdf'];
+name=['/home/nilou/Data/lum_ic_v1.pdf'];
 print('-dpdf',name) 
 export_fig(name, '-pdf')

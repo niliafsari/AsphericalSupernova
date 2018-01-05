@@ -1,5 +1,5 @@
-mtot=4.82611e-3*2;
-etot=1.3402e-2*2;
+mtot= 4.8261095e-3*2;
+etot=1.31610869e-2*2;
 rtot=0.5;
 msun=1.989e33;
 rsun=6.955e10;
@@ -41,38 +41,33 @@ else
     path='/home/nilou/Data';
 end
 
- %luminosity=zeros(1,370);
- %luminosity90=zeros(1,370);
- %luminosity_tot=zeros(1,370);
+ luminosity=zeros(1,370);
+ luminosity90=zeros(1,370);
+ luminosity_tot=zeros(1,370);
 
-% load([path '/processeddata/BSG/luminosity_1024_0_v1.mat'],'luminosity')
-% load([path '/processeddata/BSG/luminosity_1024_90_v1.mat'],'luminosity90')
-% load([path '/processeddata/BSG/luminosity_1024_tot_v1.mat'],'luminosity_tot')
+load([path '/processeddata/BSG/luminosityni_1024_0.mat'],'luminosity')
+load([path '/processeddata/BSG/luminosityni_1024_90.mat'],'luminosity90')
+load([path '/processeddata/BSG/luminosityni_1024_tot.mat'],'luminosity_tot')
 
 %load('luminosity.mat', 'luminosity');
 % temp=load('/home/nilou/Data/processeddata/RSG/luminosity_smoothed55.mat','luminosity');
 % luminosity=temp.luminosity;
-time=load([path '/processeddata/timesteps_1024.mat']);
+time=load([path '/processeddata/timestepsni_1024.mat']);
 
-for t=168:350
+for t=290:400
     t
-    load([path '/processeddata/BSG/diff_bsg_1024_' num2str(t-1) '.mat'], 'diff_bsg'); 
-    name=[ path '/rawdata/gradp2/gradp21024_' int2str(t-1) '.mat'];
+    load([path '/processeddata/BSG/diff_bsgni_1024_' num2str(t-1) '.mat'], 'diff_bsg'); 
+    name=[ path '/rawdata/gradp2/gradp2_ni1024_' int2str(t-1) '.mat'];
     load(name,'gradp2'); 
     gradp=sqrt(gradp2*pconv^2/rconv^2);
-    if (t<=200 && t~=176)
-        name=[path '/rawdata/pressure/pres1024_' int2str(t-1) '.csv'] ;
-        pres= csvread(name).*pconv;
-        name=[path '/rawdata/density/dens1024_' int2str(t-1) '.csv'] ;
-        density= csvread(name).*rhoconv;       
-    else
-        name=[path '/rawdata/pressure/pres1024_' int2str(t-1) '.mat'] ;
-        load(name,'pres_data');
-        pres=pres_data*pconv;
-        name=[path '/rawdata/density/dens1024_' int2str(t-1) '.mat'] ;
-        load(name,'dens_data');
-        density=dens_data*rhoconv;
-    end
+
+    name=[path '/rawdata/pressure/pres_ni1024_' int2str(t-1) '.mat'] ;
+    load(name,'pres_data');
+    pres=pres_data*pconv;
+    name=[path '/rawdata/density/dens_ni1024_' int2str(t-1) '.mat'] ;
+    load(name,'dens_data');
+    density=dens_data*rhoconv;
+    
 
 
     diff_bsg_t=diff_bsg(:,2:length(diff_bsg));
@@ -86,18 +81,13 @@ for t=168:350
     ydiff_n=diff_bsg(2,1:length(diff_bsg)); 
     phidiff_n=atan(xdiff_n./ydiff_n);
     
-    [phidiff_n,I]=sort(phidiff_n);
-    rdiff_n=rdiff_n(I);
-    xdiff_n=xdiff_n(I);
-    ydiff_n=ydiff_n(I); 
-    
-    rdiff_n=rdiff_n(phidiff_n<=prctile(phidiff_n,100));
-    xdiff_n=xdiff_n(phidiff_n<=prctile(phidiff_n,100));
-    ydiff_n=ydiff_n(phidiff_n<=prctile(phidiff_n,100));
-    
+    size(rdiff_n)
+    rdiff_n=rdiff_n(phidiff_n<=prctile(phidiff_n,99.5));
+    xdiff_n=xdiff_n(phidiff_n<=prctile(phidiff_n,99.5));
+    ydiff_n=ydiff_n(phidiff_n<=prctile(phidiff_n,99.5));
     phidiff_n=atan(xdiff_n./ydiff_n);
     
-    if t>170
+    if t>300
         phidiff_t=phidiff_n(rdiff_n>(0.5*rconv));
         xdiff_t=xdiff_n(rdiff_n>(0.5*rconv));
         ydiff_t=ydiff_n(rdiff_n>(0.5*rconv));
@@ -111,85 +101,60 @@ for t=168:350
 
     [phidiff,I]=sort(phidiff_t);
     rdiff=rdiff_t(I);
-        xdiff=xdiff_t(I);
-        ydiff=ydiff_t(I);    
-    if (t>175)
-        x=1:length(rdiff);
+    
+    xdiff=xdiff_t(I);
+    ydiff=ydiff_t(I);    
+    phidiff=atan(xdiff./ydiff);
+    x=1:length(rdiff);
         x=x';
         fit1 = fit(x,rdiff','poly6');
         fdata = feval(fit1,x);
-        I = abs(fdata - rdiff') > 0.3*std(rdiff');
+        I = abs(fdata - rdiff') > 0.25*std(rdiff');
         outliers = excludedata(x,rdiff','indices',I);
-        sum(outliers)    
+        sum(outliers)
+
         rdiff(outliers)=[];
         xdiff(outliers)=[];
         ydiff(outliers)=[];
-        
+        phidiff=atan(xdiff./ydiff);
+    if t<174
+
+
+
+          [xmax,I]=max(xdiff);
+    %     sum(phidiff>phidiff(I))
+
+          rdiff_k=rdiff(phidiff>phidiff(I));
+          xdiff_k=xdiff(phidiff>phidiff(I));
+          ydiff_k=ydiff(phidiff>phidiff(I));
+          phidiff_k=phidiff(phidiff>phidiff(I));
+          rdiff=rdiff(phidiff<=phidiff(I));
+          xdiff=xdiff(phidiff<=phidiff(I));
+          ydiff=ydiff(phidiff<=phidiff(I));
+          phidiff=phidiff(phidiff<=phidiff(I));
+
+            P=[xdiff_k', ydiff_k'];
+            if (length(P)>0)
+                DT = delaunayTriangulation(P);
+                Q = convexHull(DT);
+                Q(1)=[];
+                Q=flipud(Q);
+                rdiff_k=rdiff_k(Q);
+                xdiff_k=xdiff_k(Q);
+                ydiff_k=ydiff_k(Q);
+                phidiff_k=phidiff_k(Q);
+            else
+                rdiff_k=[];
+                xdiff_k=[];
+                ydiff_k=[];
+                phidiff_k=[];
+            end
+
+        rdiff=[rdiff rdiff_k];
+        xdiff=[xdiff xdiff_k];
+        ydiff=[ydiff ydiff_k];
+        phidiff=[phidiff phidiff_k];
     end
-    phidiff=atan(xdiff./ydiff);
-    [xmax,I]=max(xdiff);
-    rdiff_k=rdiff(phidiff>phidiff(I));
-    xdiff_k=xdiff(phidiff>phidiff(I));
-    ydiff_k=ydiff(phidiff>phidiff(I));
-    phidiff_k=phidiff(phidiff>phidiff(I));
-    rdiff=rdiff(phidiff<=phidiff(I));
-    xdiff=xdiff(phidiff<=phidiff(I));
-    ydiff=ydiff(phidiff<=phidiff(I));
-    phidiff=phidiff(phidiff<=phidiff(I));
-    P=[xdiff_k', ydiff_k'];
-    if (length(P)>0)
-        ydiff_k=ydiff_k-rconv;
-        phidiff_k=atan(xdiff_k./ydiff_k);
-        phidiff_k(phidiff_k<0)=pi+phidiff_k(phidiff_k<0);
-        [phidiff_k,I]=sort(phidiff_k);
-        rdiff_k=rdiff_k(I);
-        xdiff_k=xdiff_k(I);
-        ydiff_k=ydiff_k(I)+rconv; 
-    else
-        rdiff_k=[];
-        xdiff_k=[];
-        ydiff_k=[];
-        phidiff_k=[];
-    end
-    rdiff=[rdiff rdiff_k];
-    xdiff=[xdiff xdiff_k];
-    ydiff=[ydiff ydiff_k];
-    phidiff=atan(xdiff./ydiff);
-%     if 0
-%           [xmax,I]=max(xdiff);
-%     %     sum(phidiff>phidiff(I))
-% 
-%           rdiff_k=rdiff(phidiff>phidiff(I));
-%           xdiff_k=xdiff(phidiff>phidiff(I));
-%           ydiff_k=ydiff(phidiff>phidiff(I));
-%           phidiff_k=phidiff(phidiff>phidiff(I));
-%           rdiff=rdiff(phidiff<=phidiff(I));
-%           xdiff=xdiff(phidiff<=phidiff(I));
-%           ydiff=ydiff(phidiff<=phidiff(I));
-%           phidiff=phidiff(phidiff<=phidiff(I));
-% 
-%             P=[xdiff_k', ydiff_k'];
-%             if (length(P)>0)
-%                 DT = delaunayTriangulation(P);
-%                 Q = convexHull(DT);
-%                 Q(1)=[];
-%                 Q=flipud(Q);
-%                 rdiff_k=rdiff_k(Q);
-%                 xdiff_k=xdiff_k(Q);
-%                 ydiff_k=ydiff_k(Q);
-%                 phidiff_k=phidiff_k(Q);
-%             else
-%                 rdiff_k=[];
-%                 xdiff_k=[];
-%                 ydiff_k=[];
-%                 phidiff_k=[];
-%             end
-% 
-%         rdiff=[rdiff rdiff_k];
-%         xdiff=[xdiff xdiff_k];
-%         ydiff=[ydiff ydiff_k];
-%         phidiff=[phidiff phidiff_k];
-%     end
         [xmax,I]=max(xdiff);
         [ymax,U]=max(ydiff);
     index_r=floor(rdiff/((2/2048)*rconv));
@@ -275,6 +240,17 @@ for t=168:350
 %     cl=colorbar;
 %     scatter(P(:,1)*2/rconv,P(:,2)*2/rconv,1,'b');  
 %     hold on
+%     plot(xdiff_t*2/rconv,ydiff_t*2/rconv,'r');
+%     view(2)
+%     xlabel('x/R_*');
+%     ylabel('y/R_*');
+%     title(['t=' num2str(time.time1(t)*tconv,3) ' (sec)']);
+%     axis equal
+%     view(2)
+%    axis([0 4 0 4])
+%     name=[path '/plot/RSGdiff/BSG_1024_' num2str(t) '.png'];
+%     print(gcf, '-dpng', name)
+%     export_fig(name, '-dpng')
     plot(xdiff*2/rconv,ydiff*2/rconv,'r');
     view(2)
     xlabel('x/R_*');
@@ -283,11 +259,10 @@ for t=168:350
     axis equal
     view(2)
    axis([0 4 0 4])
-   name=[path '/plot/BSGdiff/BSG_1024_v1' num2str(t) '.png'];
+   name=[path '/plot/BSGdiff/BSG_1024_ni_' num2str(t) '.png'];
    print(gcf, '-dpng', name)
    export_fig(name, '-dpng')
-
 end
-save([path '/processeddata/BSG/luminosity_1024_0_v2.mat'],'luminosity')
-save([path '/processeddata/BSG/luminosity_1024_90_v2.mat'],'luminosity90')
-save([path '/processeddata/BSG/luminosity_1024_tot_v2.mat'],'luminosity_tot')
+save([path '/processeddata/BSG/luminosityni_1024_0.mat'],'luminosity')
+save([path '/processeddata/BSG/luminosityni_1024_90.mat'],'luminosity90')
+save([path '/processeddata/BSG/luminosityni_1024_tot.mat'],'luminosity_tot')

@@ -1,14 +1,14 @@
-mtot=4.82611e-3;
-etot=1.3402e-2;
+mtot= 4.8261095e-3*2;
+etot=1.31610869e-2*2;
 rtot=0.5;
 msun=1.989e33;
 rsun=6.955e10;
 
-m=14*msun;
+m=5*msun;
 e=1e51;
-r=400*rsun;
+r=0.2*rsun;
 
-kappa=0.34;
+kappa=0.2;
 c=3e10;
 rconv=r/rtot;
 econv=e/etot;
@@ -29,7 +29,7 @@ for i=1:2048
     end
 end
 
-cita=0;
+cita=1;
 
 if cita==1
     path='/mnt/scratch-lustre/nafsari/Data2048';
@@ -40,24 +40,18 @@ end
 
 luminosity=zeros(1,501-201);
 %load('luminosity.mat', 'luminosity');
-time=load([path '/processeddata/timesteps_1024.mat']);
+time=load([path '/processeddata/timestepsni_1024.mat']);
 clear diff_bsg
-for t=271:551
+for t=271:450
     t
-    name=[ path '/rawdata/dcodeunit/dcodeunit1024_' int2str(t-1) '.mat'];
+    name=[ path '/rawdata/dcodeunit/dcodeunit_ni1024_' int2str(t-1) '.mat'];
     load(name,'d');
     diff_frontBSG= d*(kappa/c)*rhoconv*vconv*rconv;
 
-    if (t<175)
-        ke=5;
-    elseif (t<180 & t>174)
-        ke=25;
-    elseif (t<190 & t>179)
-        ke=30;
-    elseif (t>189 & t<331)
-        ke=55;
+    if (t<302)
+        ke=50;
     else
-        ke=55;
+        ke=75;
     end
     temp=zeros(2048+2*ke,2048+ke);
     temp(1:2048,1:2048)=diff_frontBSG;
@@ -79,12 +73,12 @@ for t=271:551
 %     axis equal       
     
     [diff_bsg,~]=contour3(xx,yy,dsmooth,[0 0],'LineColor','r','Linewidth',1);
-    set(gca,'LineWidth',2,'FontSize',12);
-    caxis([-2 7]) 
-    ylabel(cl,'$ Log \frac{t_{diff}}{t_{dyn}} $','interpreter','latex','FontSize',24);    
-    view(2); 
-    name=['/home/nilou/Data/plot/RSGdiff/DiffFrontRSG_1024_' num2str(t-1) '.png'];
-    print(gcf, '-dpng', '-r100', name)
-    export_fig(name, '-dpng', '-r100')
-    save([path '/processeddata/RSG/diff_rsg_1024_' num2str(t-1) '.mat'], 'diff_bsg') 
+%     set(gca,'LineWidth',2,'FontSize',12);
+%     caxis([-2 7]) 
+%     ylabel(cl,'$ Log \frac{t_{diff}}{t_{dyn}} $','interpreter','latex','FontSize',24);    
+%     view(2); 
+%     name=[path '/plot/icdiff/DiffFrontic_1024_' num2str(t-1) '.png'];
+%     print(gcf, '-dpng', '-r100', name)
+%     export_fig(name, '-dpng', '-r100')
+     save([path '/processeddata/ic/diff_icni_1024_' num2str(t-1) '.mat'], 'diff_bsg') 
 end

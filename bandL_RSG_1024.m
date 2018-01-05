@@ -48,7 +48,7 @@ Z= c./([10833 7960]*10^-8);
 bands=[ G; FUV ; X];
 
 load([path '/processeddata/RSG/colortem_1024_tot_v2.mat'],'t_tot')
-load('/home/nilou/Data/processeddata/RSG/colortemp_RSG_spherical.mat','t_loc_all','time_rsg','etha_all');
+load('/home/nilou/Data/Spherical/processeddata/RSG/colortemp_RSG_spherical.mat','t_loc_all','time_rsg','etha_all');
 time_rsg1=time_rsg;
 time_rsg=(time.time1*tconv);
 
@@ -66,25 +66,28 @@ luminosity_tot_fit=10.^ff(log10(time_rsg(173:1:420)'));
 luminosity_tot_fit(1)= 10.^43;
 %plot(log10(time_rsg(173:1:420)),luminosity_tot_fit,'-.b','LineWidth',1.5),hold on,
 
-f=fit(time_axis_log(1:95)+0.03,log_l(1:95),'poly5');
+f=fit(log10(time_rsg1(141:270)-time_rsg1(109)+25000),log_l(1:130),'poly6');
 L_s=10.^f(log10(time_rsg(173:1:420)));
 
-f= fit(log10(time_rsg(173:1:420)),log10(t_tot(173:420)/11604.52)','poly3');
+f= fit(log10(time_rsg(173:1:420)),log10(t_tot(173:420)/(1.5*11604.52))','poly3');
 t_color_rsg=(10.^f(log10(time_rsg(173:1:420)')))*11604.52;
 %plot(log10(time_rsg(173:1:420)),t_t,'-k','LineWidth',1.5),hold on,
 
-f= fit(log10(time_rsg1(109:210)-time_rsg1(109)+time_rsg1(65)+927.3),log10(t_loc_all(109:210)/11604.52),'poly5');
+load('/home/nilou/Data/Spherical/processeddata/RSG/T_c_RSG_spherical.mat','T_c_RSG','time_RSG_log','time_rsg1');
+
+f= fit(time_RSG_log,T_c_RSG,'smoothingspline');
 T_c=(10.^f(log10(time_rsg(173:1:420)')))*11604.52;
 %plot(log10(time_rsg1(109:210)-time_rsg1(109)+time_rsg1(65)+927.3),t_t,'--k','LineWidth',1.5),hold on,
 
-t_sph=time_rsg(173:1:420)-time_rsg(173)+927.3;
-t_s=14*3600* (m/(15*msun))^0.43*(r/(500*rsun))^1.26*(e/1e51)^-0.56;
-
-t_s=14*3600* (m/(15*msun))^0.43*(r/(500*rsun))^1.26*(e/1e51)^-0.56;
-T_c(t_sph<t_s)=10*(m/(15*msun))^-0.22*(r/(500*rsun))^0.12 *(e/1e51)^0.23* (t_sph(t_sph<t_s)/3600).^-0.36;
-T_c(t_sph>t_s )=3*(m/(15*msun))^-0.13*(r/(500*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t_s)/(24*3600)).^-0.56;
-
-T_c=T_c*11604.52;
+% clear T_c
+% t_sph=time_rsg1(141:270)-time_rsg1(140);
+% t_s=14*3600* (m/(15*msun))^0.43*(r/(500*rsun))^1.26*(e/1e51)^-0.56;
+% T_c(t_sph<t_s)=10*(m/(15*msun))^-0.22*(r/(500*rsun))^0.12 *(e/1e51)^0.23* (t_sph(t_sph<t_s)/3600).^-0.36;
+% T_c(t_sph>t_s )=3*(m/(15*msun))^-0.13*(r/(500*rsun))^0.38 *(e/1e51)^0.11* (t_sph(t_sph>t_s)/(24*3600)).^-0.56;
+% T_c=T_c*11604.52;
+% 
+% f= fit(log10(time_rsg1(141:270)-time_rsg1(109)+25000),log10(T_c'/(11604.52)),'smoothingspline');
+% T_c=(10.^f(log10(time_rsg(173:1:420)')))*11604.52;
 
 bandL=zeros(length(bands),248,4);
 factor=zeros(1,248);
@@ -177,10 +180,10 @@ ax2 = axes('Position',ax1_pos,...
     'Color','none');
 ax2.YDir='reverse';
 ax2.XTick=[]
-z=linspace(0,1,8);
-ax2.YTick=z(1:7);
+z=linspace(0,1,9);
+ax2.YTick=z(2:2:8);
 ax1.YTick
-ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-15:1:-9))/2.5))/1e-7),1));
+ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-13:1:-10))/2.5))/1e-7),1));
 
 set(gca,'LineWidth',1.5,'FontSize',12);
 
@@ -191,11 +194,11 @@ ax2 = axes('Position',ax1_pos,...
     'Color','none');
 ax2.YDir='reverse';
 ax2.XTick=[]
-z=linspace(0,1,8);
-ax2.YTick=z(1:7);
+z=linspace(0,1,9);
+ax2.YTick=z(2:2:8);
 ax2.YLabel.String='Log(L[erg/s])'
-%ax1.YTick=-13:-8;
-ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-18:1:-12))/2.5))/1e-7),1));
+ax1_1.YTick
+ax2.YTickLabel=num2cell(round(log10((10.^((71.197425-(-16:1:-13))/2.5))/1e-7),1));
 
  
 
