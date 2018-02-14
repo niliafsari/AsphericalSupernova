@@ -58,18 +58,18 @@ load('/home/nilou/Data/processeddata/RSG/spherical_RSG.mat','log_l','time_axis_l
 time_rsg=time.time1*tconv;
 f= fit(log10(time_rsg(173:1:420)),log10(luminosity(1,173:1:420))','rat55');
 luminosity_fit=f(log10(time_rsg(173:1:420)'));
-plot(log10(time_rsg(173:1:420)),luminosity_fit,'-r','LineWidth',1.5),hold on,
+plot(log10(time_rsg(173:1:420)),luminosity_fit,'-r','LineWidth',2.5),hold on,
 
 f= fit(log10(time_rsg(173:1:420)),log10(2*luminosity90(1,173:1:420))','rat55');
 luminosity90_fit=f(log10(time_rsg(173:1:420)'));
 %luminosity90_fit(40:50)= 42.8542;
-plot(log10(time_rsg(173:1:420)),luminosity90_fit,'--k','LineWidth',1.5),hold on,
+plot(log10(time_rsg(173:1:420)),luminosity90_fit,'--k','LineWidth',2.5),hold on,
 
 f= fit(log10(time_rsg(173:1:420)),log10(2*luminosity_tot(1,173:1:420))','rat55');
 luminosity_tot_fit=f(log10(time_rsg(173:1:420)'));
 luminosity_tot_fit(1)= 43;
-plot(log10(time_rsg(173:1:420)),luminosity_tot_fit,'-.b','LineWidth',1.5),hold on,
-plot(time_axis_log(1:100)+0.08,log_l(1:100),':m','LineWidth',1.5), hold on
+plot(log10(time_rsg(173:1:420)),luminosity_tot_fit,'-.b','LineWidth',2.5),hold on,
+plot(time_axis_log(1:100)+0.08,log_l(1:100),':m','LineWidth',2.5), hold on
 
 
 load([path '/processeddata/RSG/lum_ni.mat'],'lum0')
@@ -105,17 +105,18 @@ time_rsg=time.time1*tconv;
 
 f= fit(lum0(:,1),lum0(:,2),'rat44');
 luminosity_fit_0=f(log10(time_rsg(174:1:419))');
-plot(log10(time_rsg(173:1:418))',luminosity_fit_0,'-r','LineWidth',2),hold on,
-
-
-f= fit(log10(time_rsg(173:1:417)),lum90_n,'smoothingspline');
-luminosity90_fit=f(log10(time_rsg(173:1:417)));
-plot(log10(time_rsg(173:1:417)),luminosity90_fit,'-k','LineWidth',2),hold on,
-
+plot(log10(time_rsg(173:1:418))',luminosity_fit_0-0.2,'-r','LineWidth',1.3),hold on,
 
 f= fit(log10(time_rsg(173:1:411)),lumtot_n,'smoothingspline');
 luminosity_tot_fit=f(log10(time_rsg(173:1:411)));
-plot(log10(time_rsg(173:1:411)),luminosity_tot_fit,'-b','LineWidth',2),hold on,
+plot(log10(time_rsg(173:1:411)),luminosity_tot_fit-0.2,'--k','LineWidth',1.3),hold on,
+
+f= fit(log10(time_rsg(173:1:417)),lum90_n,'smoothingspline');
+luminosity90_fit=f(log10(time_rsg(173:1:417)));
+plot(log10(time_rsg(173:1:417)),luminosity90_fit-0.2,'-.b','LineWidth',1.3),hold on,
+
+
+
 
 
 

@@ -21,8 +21,8 @@ for i=1:256
     end
 end
 
-for t=23:23
-    name=['/home/nilou/Data/processeddata/dens256_' int2str(t) '.csv'] ;
+for t=216:216
+    name=['/home/nilou/Data/dens256_' int2str(t) '.csv'] ;
     density= csvread(name)/rhotot;
     close all
     a=get(gcf,'Position');
@@ -47,11 +47,10 @@ for t=23:23
     ylabel('y/R_*');
     %legend('\rho / \rho_*','Location','northeast');
     set(gca,'LineWidth',2,'FontSize',12);
-    name=['density256_1.pdf'];
-    set(gcf, 'PaperPosition', [0 0 5 4.5]); %Position plot at left hand corner with width 5 and height 5.
-    set(gcf, 'PaperSize', [5 4.5]); %Set the paper to have width 5 and height 5.
-    %print(gcf, '-dpng',name)
-    %print(gcf, '-dpdf','-r10',name) 
-    %export_fig(name, '-pdf','-r5')
+    name=['density256_2.pdf'];
+    %set(gcf, 'PaperPosition', [0 0 5 4.5]); %Position plot at left hand corner with width 5 and height 5.
+    %set(gcf, 'PaperSize', [5 4.5]); %Set the paper to have width 5 and height 5.
+    print(gcf, '-dpng',name)
+    export_fig(name, '-png')
 end
 

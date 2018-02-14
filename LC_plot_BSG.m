@@ -57,17 +57,17 @@ luminosity(ind(12:23))=[];
 time_rsg=time.time1*tconv;
 f= fit(log10(time_rsg(173:2:352)),log10(luminosity(1,173:2:352))','rat44');
 luminosity_fit=f(log10(time_rsg(173:2:352)'));
-plot(log10(time_rsg(173:2:352)),luminosity_fit,'-r','LineWidth',1.5),hold on,
+plot(log10(time_rsg(173:2:352)),luminosity_fit,'-r','LineWidth',2.5),hold on,
 
 f= fit(log10(time_rsg(173:2:352)),log10(2*luminosity90(1,173:2:352))','rat44');
 luminosity90_fit=f(log10(time_rsg(173:2:352)'));
 
-plot(log10(time_rsg(173:2:352)),luminosity90_fit,'--k','LineWidth',1.5),hold on,
+plot(log10(time_rsg(173:2:352)),luminosity90_fit,'--k','LineWidth',2.5),hold on,
 
 f= fit(log10(time_rsg(173:2:352)),log10(2*luminosity_tot(1,173:2:352))','rat44');
 luminosity_tot_fit=f(log10(time_rsg(173:2:352)'));
-plot(log10(time_rsg(173:2:352)),luminosity_tot_fit,'-.b','LineWidth',1.5),hold on,
-plot(time_axis_log(2:85)+0.02,log_l(2:85),':m','LineWidth',1.5), hold on
+plot(log10(time_rsg(173:2:352)),luminosity_tot_fit,'-.b','LineWidth',2.5),hold on,
+plot(time_axis_log(2:85)+0.02,log_l(2:85),':m','LineWidth',2.5), hold on
 
 load([path '/processeddata/BSG/lum_ni.mat'],'lum0')
 load([path '/processeddata/BSG/lum90_ni.mat'],'lum90')
@@ -99,24 +99,23 @@ time_rsg=time.time1*tconv;
 
 f= fit(lum0(:,1),lum0(:,2),'rat44');
 luminosity_fit_0=f(log10(time_rsg(177:1:350))');
-plot(log10(time_rsg(177:1:350))',luminosity_fit_0-0.3,'-r','LineWidth',2),hold on,
-
-
-f= fit(lum90(:,1),lum90(:,2),'smoothingspline');
-luminosity90_fit=f(log10(time_rsg(177:1:350)));
-plot(log10(time_rsg(177:1:350)),luminosity90_fit-0.3,'-k','LineWidth',2),hold on,
-
+plot(log10(time_rsg(177:1:350))'-0.01,luminosity_fit_0-0.2,'-r','LineWidth',1.3),hold on,
 
 f= fit(lumtot(:,1),lumtot(:,2),'smoothingspline');
 luminosity_tot_fit=f(log10(time_rsg(177:1:350)));
-plot(log10(time_rsg(177:1:350)),luminosity_tot_fit-0.3,'-b','LineWidth',2),hold on,
+plot(log10(time_rsg(177:1:350))-0.01,luminosity_tot_fit-0.2,'--k','LineWidth',1.3),hold on,
+
+f= fit(lum90(:,1),lum90(:,2),'smoothingspline');
+luminosity90_fit=f(log10(time_rsg(177:1:350)));
+plot(log10(time_rsg(177:1:350))-0.01,luminosity90_fit-0.2,'-.b','LineWidth',1.3),hold on,
+
 
 
 set(gca,'LineWidth',2,'FontSize',12);
 xlabel('Log (t [sec])'); 
 ylabel('Log (L_{tot} [erg/s])');
 %title('Time of Maximum Compression Rate');
-legend('\Theta=0','\Theta=\pi/2','Total','Spherical','Location','best');
+legend('\Theta=0, \epsilon=0.26','\Theta=\pi/2, \epsilon=0.26','Total, \epsilon=0.26','Spherical','\Theta=0, \epsilon=0.08','\Theta=\pi/2, \epsilon=0.08','Total, \epsilon=0.08','Location','northeast');
 name=['/home/nilou/Data/lum_1024_BSG_v1.pdf'];
 print('-dpdf',name) 
 export_fig(name, '-pdf')

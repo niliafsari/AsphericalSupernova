@@ -47,14 +47,27 @@ bands=[ G;  FUV ; X ];
 % luminosity_phi90=lum.luminosity(23:32)/10;
 
 
-load('/home/nilou/Data/processeddata/BSG/luminosity_0.mat','luminosity')
-load('/home/nilou/Data/processeddata/BSG/luminosity_90.mat','luminosity90')
-load('/home/nilou/Data/processeddata/BSG/luminosity_tot.mat','luminosity_tot')
+% load('/home/nilou/Data/processeddata/BSG/luminosity_0.mat','luminosity')
+% load('/home/nilou/Data/processeddata/BSG/luminosity_90.mat','luminosity90')
+% load('/home/nilou/Data/processeddata/BSG/luminosity_tot.mat','luminosity_tot')
+cita=0;
+
+if cita==1
+    path='/mnt/scratch-lustre/nafsari/Data2048';
+else
+    path='/home/nilou/Data';
+end
+
+load([path '/processeddata/ic/luminosity_1024_0.mat'],'luminosity')
+load([path '/processeddata/ic/luminosity_1024_90.mat'],'luminosity90')
+load([path '/processeddata/ic/luminosity_1024_tot.mat'],'luminosity_tot')
+
+
 load('/home/nilou/Data/Spherical/processeddata/Ic/spherical_ic.mat','log_l','time_axis_log','spherical_LC_NS');
 
-luminosity(23)=4.2e42;
-luminosity90(23)=2.1e42;
-luminosity_tot(23)=2e42;
+% luminosity(23)=4.2e42;
+% luminosity90(23)=2.1e42;
+% luminosity_tot(23)=2e42;
 
 
 
@@ -73,12 +86,50 @@ t_color_ic=(10.^fxx(log10(time_ic(23:32)')))*11604.52;
 
 T_c=(10.^fff(log10(time_ic(23:32)')))*11604.52;
 
-f= fit(log10(time_ic(23:40)),log10(luminosity(23:40)/9.7)','rat44');
+% f= fit(log10(time_ic(23:40)),log10(luminosity(23:40)/9.7)','rat44');
+% luminosity_fit=10.^f(log10(time_ic(23:32)'));
+% f= fit(log10(time_ic(23:40)),log10(2*luminosity90(23:40)/9.7)','rat44');
+% luminosity90_fit=10.^f(log10(time_ic(23:32)'));
+% f= fit(log10(time_ic(23:40)),log10(2*luminosity_tot(23:40)/9.7)','rat44');
+% luminosity_tot_fit=10.^f(log10(time_ic(23:32)'));
+mtot=4.82611e-3*2;
+etot=1.3402e-2*2;
+rtot=0.5;
+msun=1.989e33;
+rsun=6.955e10;
+
+m=5*msun;
+e=1e51;
+r=0.2*rsun;
+
+kappa=0.2;
+c=3e10;
+rconv=r/rtot;
+econv=e/etot;
+mconv=m/mtot;
+
+pconv=econv/rconv^3;
+rhoconv=mconv/rconv^3;
+vconv=sqrt(econv/mconv);
+tconv=rconv/vconv;
+
+luminosity(175)=luminosity(175)*2;
+luminosity90(1,2)=luminosity90(1,2)+0.2;
+luminosity_tot(1,2)=luminosity_tot(1,2)+0.2;
+time=load([path '/processeddata/timesteps_1024.mat']);
+time_ic11=time.time1*tconv;
+
+f=fit(log10(time_ic11(175:2:269)),log10(luminosity(175:222)')+0.25,'smoothingspline');
 luminosity_fit=10.^f(log10(time_ic(23:32)'));
-f= fit(log10(time_ic(23:40)),log10(2*luminosity90(23:40)/9.7)','rat44');
+%plot(,luminosity_fit,'-r','LineWidth',2.5),hold on
+
+f=fit(log10(time_ic11(175:2:263)),luminosity90(:,2)+0.3+0.35,'rat44');
 luminosity90_fit=10.^f(log10(time_ic(23:32)'));
-f= fit(log10(time_ic(23:40)),log10(2*luminosity_tot(23:40)/9.7)','rat44');
+%plot(,luminosity90_fit,'--k','LineWidth',2.5),hold on
+
+f=fit(log10(time_ic11(175:2:269)),luminosity_tot(:,2)+0.3+0.35,'rat44');
 luminosity_tot_fit=10.^f(log10(time_ic(23:32)'));
+%plot(),luminosity_tot_fit,'-.b','LineWidth',2.5),hold on
 
 ff= fit(time_axis_log(1:45)+0.01,log_l(1:45),'rat44');
 L_s=10.^ff(log10(time_ic(23:32)'));
@@ -156,9 +207,12 @@ set(gca,'LineWidth',1.5,'FontSize',12);
 set(gca,'Ydir','reverse')
 ax1_1=subplot(3,1,2)
 plot(log10(time_ic(23:32)'),reshape(bandM(2,:,:),[10 4]),'LineWidth',1.5)
+ylabel('Absolute Magnitude [mag]');
 set(gca,'LineWidth',1.5,'FontSize',12);
 axis([1.05 1.3 -5 15])
+
 ylabel('Absolute Magnitude [mag]');
+
 set(gca,'Ydir','reverse')
 text(1.2,10,'FUV','HorizontalAlignment','left','FontSize',12);
 ax1_2=subplot(3,1,3)

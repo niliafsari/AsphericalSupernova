@@ -1,5 +1,5 @@
-mtot=0.0048187313;
-etot=0.0130949665;
+mtot=4.825996760367126832e-3*2;
+etot=1.340200260601695156E-02*2;
 rtot=0.5;
 ttot=rtot/sqrt(etot/mtot);
 rhotot=mtot/rtot^3;
@@ -19,7 +19,7 @@ set(myFigure,'units','points','position',[x0,y0,width,height])
 
 plot(poly_changed(:,1)/rtot,poly_changed(:,2)/rhotot,'-b' ,'LineWidth',2); hold on
 plot(poly_orig(:,1)/rtot,poly_orig(:,2)/rhotot,'-.r' ,'LineWidth',2)
-axis([0 1 0 80])
+axis([0 1 0 40])
 set(gca,'LineWidth',2,'FontSize',13);
 
 xlabel('r/R_*'); 
